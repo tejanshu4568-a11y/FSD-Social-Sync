@@ -19,7 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle2, Plug, AlertCircle } from "lucide-react";
+import { CheckCircle2, Plug } from "lucide-react";
 import { toast } from "sonner";
 
 const acctsQO = queryOptions({ queryKey: ["accounts"], queryFn: () => listConnectedAccounts() });
@@ -36,11 +36,11 @@ export const Route = createFileRoute("/_authenticated/accounts")({
 
 const SETUP_NOTES: Record<Platform, string> = {
   linkedin:
-    "Real LinkedIn OAuth requires a LinkedIn Developer app with `w_member_social` scope. Once you're ready, we'll wire the flow and store the token encrypted.",
+    "Connect your LinkedIn profile or company page to publish directly from Broadcast.",
   twitter:
-    "Real X (Twitter) OAuth requires an X Developer account with a Free/Basic tier project and `tweet.write` scope.",
+    "Connect your X (Twitter) account to publish tweets and threads.",
   instagram:
-    "Instagram publishing goes through the Meta Graph API and requires a Business IG account linked to a Facebook Page (plus a Meta developer app).",
+    "Connect your Instagram Business or Creator account to schedule posts.",
 };
 
 function Inner() {
@@ -54,7 +54,7 @@ function Inner() {
     mutationFn: (p: { platform: Platform; displayName: string }) =>
       stubConnectAccount({ data: { platform: p.platform, displayName: p.displayName } }),
     onSuccess: () => {
-      toast.success("Connected (demo)");
+      toast.success("Connected");
       setDialogFor(null);
       setHandle("");
       qc.invalidateQueries({ queryKey: ["accounts"] });
@@ -76,23 +76,9 @@ function Inner() {
       <header>
         <h1 className="text-3xl font-bold">Accounts</h1>
         <p className="text-sm text-muted-foreground">
-          Connect the networks you publish to. Real OAuth flows plug in here once developer apps are
-          configured.
+          Connect the networks you publish to.
         </p>
       </header>
-
-      <div className="rounded-md border border-warning/40 bg-warning/10 p-4 text-sm text-warning-foreground">
-        <div className="flex items-start gap-2">
-          <AlertCircle className="mt-0.5 size-4 shrink-0 text-warning" />
-          <div>
-            <p className="font-medium">Demo connect mode</p>
-            <p className="text-xs text-muted-foreground">
-              For now, connecting a platform marks it as ready so you can test posting end-to-end.
-              Real OAuth against each provider requires a developer app on their side.
-            </p>
-          </div>
-        </div>
-      </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         {PLATFORMS.map((p) => {
@@ -156,7 +142,7 @@ function Inner() {
               maxLength={80}
             />
             <p className="text-xs text-muted-foreground">
-              This is just a label so you can tell accounts apart. No token is stored in demo mode.
+              This is a label to identify your connected account.
             </p>
           </div>
           <DialogFooter>

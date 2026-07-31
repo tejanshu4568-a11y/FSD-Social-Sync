@@ -5,23 +5,19 @@ import { createClientOnlyFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { createPost } from "@/lib/posts.functions";
 import { PLATFORM_META, PLATFORMS, type Platform } from "@/lib/platform-constraints";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { ImagePlus, Send, Clock, X } from "lucide-react";
+import { ImagePlus, Send, Clock, X, Sparkles, Eye, Check, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/composer")({
-  head: () => ({ meta: [{ title: "Composer · Broadcast" }] }),
+  head: () => ({ meta: [{ title: "Composer Studio · Broadcast" }] }),
   component: Composer,
 });
 
-// GitHub Pages has no server, so "post now" publishing is simulated in the
-// browser (see publisher.client.ts) instead of on a trusted server. Wrapped
-// with createClientOnlyFn so this browser-only module never ends up in the
-// SSR/prerender bundle that TanStack Start's SPA mode still builds.
 const triggerPublish = createClientOnlyFn((postId: string) =>
   import("@/lib/publisher.client").then(({ publishPostById }) => publishPostById(postId)),
 );
@@ -33,6 +29,7 @@ function Composer() {
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const [scheduledFor, setScheduledFor] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [previewPlatform, setPreviewPlatform] = useState<Platform>("twitter");
 
   const mutation = useMutation({
     mutationFn: (mode: "now" | "schedule") =>
@@ -46,7 +43,7 @@ function Composer() {
         },
       }),
     onSuccess: (row) => {
-      toast.success("Post queued");
+      toast.success("Post successfully queued!");
       setContent("");
       setMediaUrls([]);
       setScheduledFor("");
@@ -98,135 +95,250 @@ function Composer() {
     !mutation.isPending;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <div className="space-y-6">
-        <header>
-          <h1 className="text-3xl font-bold">Composer</h1>
-          <p className="text-sm text-muted-foreground">Write once. Adapt for each network. Ship.</p>
-        </header>
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-border/50">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold text-primary mb-1">
+            <Sparkles className="size-3.5" /> Studio Multi-Channel Composer
+          </div>
+          <h1 className="text-3xl font-extrabold font-display tracking-tight">Post Composer</h1>
+          <p className="text-sm text-muted-foreground">Draft your message once. Customize for LinkedIn, X, and Instagram in real time.</p>
+        </div>
+      </header>
 
-        <Card className="surface-card">
-          <CardContent className="space-y-4 pt-6">
-            <Textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="What do you want to say?"
-              rows={10}
-              className="min-h-[240px] resize-y bg-background text-base"
-            />
-            {mediaUrls.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {mediaUrls.map((u, i) => (
-                  <div key={u} className="relative">
-                    <img
-                      src={u}
-                      alt=""
-                      className="size-24 rounded-md border border-border object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setMediaUrls((m) => m.filter((_, idx) => idx !== i))}
-                      className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full bg-destructive text-destructive-foreground"
-                      aria-label="Remove"
-                    >
-                      <X className="size-3" />
-                    </button>
-                  </div>
-                ))}
+      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+        <div className="space-y-6">
+          {/* Main Editor Card */}
+          <Card className="surface-card p-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Post Content
+                </Label>
+                <span className="text-xs font-mono text-muted-foreground">
+                  {content.length} total characters
+                </span>
               </div>
-            )}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-secondary">
-                  <ImagePlus className="size-4" />
-                  {uploading ? "Uploading…" : "Add image"}
+
+              <Textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="What would you like to broadcast to your networks today?"
+                rows={9}
+                className="min-h-[220px] resize-y bg-background/80 text-base leading-relaxed p-4 border-border focus:border-primary font-sans"
+              />
+
+              {/* Uploaded Media Gallery */}
+              {mediaUrls.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold text-muted-foreground">Attached Media ({mediaUrls.length})</Label>
+                  <div className="flex flex-wrap gap-3">
+                    {mediaUrls.map((u, i) => (
+                      <div key={u} className="relative group">
+                        <img
+                          src={u}
+                          alt="Attached media"
+                          className="size-24 rounded-xl border border-border/80 object-cover shadow-sm group-hover:opacity-90 transition-opacity"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setMediaUrls((m) => m.filter((_, idx) => idx !== i))}
+                          className="absolute -right-2 -top-2 grid size-6 place-items-center rounded-full bg-destructive text-destructive-foreground shadow-md hover:scale-110 transition-transform"
+                          aria-label="Remove image"
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Controls Footer */}
+              <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-4">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border/80 bg-secondary/50 px-4 py-2 text-xs font-semibold text-foreground hover:bg-secondary hover:border-primary/40 transition-all">
+                  <ImagePlus className="size-4 text-primary" />
+                  {uploading ? "Uploading media…" : "Attach Image"}
                   <input type="file" accept="image/*" hidden onChange={onUpload} />
                 </label>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="sched" className="text-xs text-muted-foreground">
-                    Schedule
-                  </Label>
-                  <Input
-                    id="sched"
-                    type="datetime-local"
-                    value={scheduledFor}
-                    onChange={(e) => setScheduledFor(e.target.value)}
-                    className="w-56"
-                  />
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="sched" className="text-xs font-semibold text-muted-foreground">
+                      Schedule:
+                    </Label>
+                    <Input
+                      id="sched"
+                      type="datetime-local"
+                      value={scheduledFor}
+                      onChange={(e) => setScheduledFor(e.target.value)}
+                      className="w-52 h-9 bg-background/80 border-border text-xs"
+                    />
+                  </div>
+
+                  {scheduledFor ? (
+                    <Button
+                      disabled={!canSubmit}
+                      variant="gradient"
+                      onClick={() => mutation.mutate("schedule")}
+                      className="shadow-glow"
+                    >
+                      <Clock className="size-4" />
+                      Schedule Post
+                    </Button>
+                  ) : (
+                    <Button
+                      disabled={!canSubmit}
+                      variant="gradient"
+                      onClick={() => mutation.mutate("now")}
+                      className="shadow-glow"
+                    >
+                      <Send className="size-4" />
+                      Broadcast Now
+                    </Button>
+                  )}
                 </div>
-                {scheduledFor ? (
-                  <Button disabled={!canSubmit} onClick={() => mutation.mutate("schedule")}>
-                    <Clock className="size-4" />
-                    Schedule
-                  </Button>
-                ) : (
-                  <Button disabled={!canSubmit} onClick={() => mutation.mutate("now")}>
-                    <Send className="size-4" />
-                    Post now
-                  </Button>
-                )}
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </Card>
 
-      <aside className="space-y-4">
-        <Card className="surface-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Target networks</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {PLATFORMS.map((p) => {
-              const meta = PLATFORM_META[p];
-              const on = selected.includes(p);
-              const remaining = meta.charLimit - content.length;
-              const over = remaining < 0;
-              return (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() =>
-                    setSelected((s) => (s.includes(p) ? s.filter((x) => x !== p) : [...s, p]))
-                  }
-                  className={
-                    "flex w-full items-center justify-between rounded-md border p-3 text-left transition-colors " +
-                    (on
-                      ? "border-primary/50 bg-primary/5"
-                      : "border-border hover:border-primary/30")
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="inline-block size-3 rounded-full"
-                      style={{ background: meta.colorVar }}
-                    />
-                    <div>
-                      <div className="text-sm font-medium">{meta.label}</div>
-                      <div className="text-[11px] text-muted-foreground">{meta.hashtagHint}</div>
-                    </div>
-                  </div>
-                  <div
+          {/* Live Platform Rendering Preview */}
+          <Card className="surface-card p-6 border-primary/20">
+            <div className="flex items-center justify-between mb-4 border-b border-border/60 pb-3">
+              <div className="flex items-center gap-2">
+                <Eye className="size-4 text-primary" />
+                <CardTitle className="text-sm font-bold">Live Social Preview</CardTitle>
+              </div>
+              <div className="flex rounded-lg bg-secondary/80 p-1 gap-1">
+                {PLATFORMS.map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPreviewPlatform(p)}
                     className={
-                      "text-xs font-medium " + (over ? "text-destructive" : "text-muted-foreground")
+                      "px-2.5 py-1 text-xs font-bold rounded-md capitalize transition-all " +
+                      (previewPlatform === p
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground")
                     }
                   >
-                    {remaining}
-                  </div>
-                </button>
-              );
-            })}
-          </CardContent>
-        </Card>
+                    {PLATFORM_META[p].label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        {overLimit.length > 0 && (
-          <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
-            Over limit for {overLimit.map((p) => PLATFORM_META[p].label).join(", ")}.
-          </div>
-        )}
-      </aside>
+            <div className="rounded-xl border border-border/80 bg-background/80 p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div
+                  className="size-9 rounded-full text-white font-bold grid place-items-center text-xs shadow-sm"
+                  style={{ background: PLATFORM_META[previewPlatform].colorVar }}
+                >
+                  {PLATFORM_META[previewPlatform].label[0]}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-foreground">
+                    Your Profile ({PLATFORM_META[previewPlatform].label})
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">
+                    {PLATFORM_META[previewPlatform].hashtagHint}
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-sm text-foreground/90 leading-relaxed font-sans whitespace-pre-wrap">
+                {content || <span className="text-muted-foreground italic">Start typing above to see your post preview here…</span>}
+              </div>
+
+              {mediaUrls.length > 0 && (
+                <div className="mt-4 grid gap-2 grid-cols-2">
+                  {mediaUrls.map((url) => (
+                    <img key={url} src={url} alt="Preview" className="w-full h-36 object-cover rounded-lg border border-border" />
+                  ))}
+                </div>
+              )}
+            </div>
+          </Card>
+        </div>
+
+        {/* Sidebar Constraints & Target Networks */}
+        <aside className="space-y-5">
+          <Card className="surface-card p-5">
+            <CardHeader className="p-0 pb-3">
+              <CardTitle className="text-sm font-bold">Target Networks</CardTitle>
+              <CardDescription>Select which platforms to publish to</CardDescription>
+            </CardHeader>
+
+            <div className="space-y-2.5">
+              {PLATFORMS.map((p) => {
+                const meta = PLATFORM_META[p];
+                const on = selected.includes(p);
+                const remaining = meta.charLimit - content.length;
+                const over = remaining < 0;
+                const percent = Math.min(100, Math.max(0, (content.length / meta.charLimit) * 100));
+
+                return (
+                  <div
+                    key={p}
+                    onClick={() =>
+                      setSelected((s) => (s.includes(p) ? s.filter((x) => x !== p) : [...s, p]))
+                    }
+                    className={
+                      "cursor-pointer rounded-xl border p-3.5 transition-all duration-200 " +
+                      (on
+                        ? "border-primary bg-primary/10 shadow-glow"
+                        : "border-border/80 bg-background/50 hover:border-primary/40")
+                    }
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2.5">
+                        <span
+                          className="inline-block size-3.5 rounded-full shadow-sm"
+                          style={{ background: meta.colorVar }}
+                        />
+                        <div>
+                          <div className="text-xs font-bold text-foreground">{meta.label}</div>
+                          <div className="text-[10px] text-muted-foreground">{meta.hashtagHint}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={
+                            "text-xs font-mono font-bold " + (over ? "text-destructive" : "text-muted-foreground")
+                          }
+                        >
+                          {remaining}
+                        </span>
+                        {on && <Check className="size-3.5 text-primary" />}
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
+                    <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                      <div
+                        className={
+                          "h-full transition-all duration-300 " +
+                          (over ? "bg-destructive" : percent > 85 ? "bg-warning" : "bg-primary")
+                        }
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          {overLimit.length > 0 && (
+            <Card className="surface-card border-destructive/40 bg-destructive/10 p-4 text-xs text-destructive flex items-start gap-2.5">
+              <AlertCircle className="size-4 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold">Character Limit Exceeded:</span> Content exceeds maximum allowed length for{" "}
+                {overLimit.map((p) => PLATFORM_META[p].label).join(", ")}.
+              </div>
+            </Card>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }

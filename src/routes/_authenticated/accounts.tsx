@@ -19,16 +19,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle2, Plug } from "lucide-react";
+import { CheckCircle2, Plug, Sparkles, Link2, Unlink } from "lucide-react";
 import { toast } from "sonner";
 
 const acctsQO = queryOptions({ queryKey: ["accounts"], queryFn: () => listConnectedAccounts() });
 
 export const Route = createFileRoute("/_authenticated/accounts")({
   loader: ({ context }) => context.queryClient.ensureQueryData(acctsQO),
-  head: () => ({ meta: [{ title: "Accounts · Broadcast" }] }),
+  head: () => ({ meta: [{ title: "Connected Accounts · Broadcast" }] }),
   component: () => (
-    <Suspense fallback={<div className="text-muted-foreground">Loading…</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm font-semibold">Loading Connected Accounts…</div>}>
       <Inner />
     </Suspense>
   ),
@@ -36,11 +36,11 @@ export const Route = createFileRoute("/_authenticated/accounts")({
 
 const SETUP_NOTES: Record<Platform, string> = {
   linkedin:
-    "Connect your LinkedIn profile or company page to publish directly from Broadcast.",
+    "Connect your LinkedIn profile or Company Page to sync professional posts directly from Broadcast.",
   twitter:
-    "Connect your X (Twitter) account to publish tweets and threads.",
+    "Connect your X (Twitter) handle to broadcast posts, threads, and short updates.",
   instagram:
-    "Connect your Instagram Business or Creator account to schedule posts.",
+    "Connect your Instagram Business or Creator profile to schedule visual posts and captions.",
 };
 
 function Inner() {
@@ -54,7 +54,7 @@ function Inner() {
     mutationFn: (p: { platform: Platform; displayName: string }) =>
       stubConnectAccount({ data: { platform: p.platform, displayName: p.displayName } }),
     onSuccess: () => {
-      toast.success("Connected");
+      toast.success("Social network account connected!");
       setDialogFor(null);
       setHandle("");
       qc.invalidateQueries({ queryKey: ["accounts"] });
@@ -65,7 +65,7 @@ function Inner() {
   const disc = useMutation({
     mutationFn: (platform: Platform) => disconnectAccount({ data: { platform } }),
     onSuccess: () => {
-      toast.success("Disconnected");
+      toast.success("Account disconnected");
       qc.invalidateQueries({ queryKey: ["accounts"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -73,89 +73,120 @@ function Inner() {
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-3xl font-bold">Accounts</h1>
-        <p className="text-sm text-muted-foreground">
-          Connect the networks you publish to.
-        </p>
+      <header className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-border/50">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold text-primary mb-1">
+            <Sparkles className="size-3.5" /> Studio Integration Center
+          </div>
+          <h1 className="text-3xl font-extrabold font-display tracking-tight">Connected Accounts</h1>
+          <p className="text-sm text-muted-foreground">Manage authorized profiles across supported social networks.</p>
+        </div>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-3">
         {PLATFORMS.map((p) => {
           const meta = PLATFORM_META[p];
           const acct = accounts.find((a) => a.platform === p);
           const connected = !!acct?.connected;
           return (
-            <Card key={p} className="surface-card">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <span
-                    className="inline-block size-3 rounded-full"
-                    style={{ background: meta.colorVar }}
-                  />
-                  <CardTitle className="text-base">{meta.label}</CardTitle>
+            <Card key={p} className="surface-card surface-card-hover p-6 flex flex-col justify-between space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="grid size-10 place-items-center rounded-xl text-white font-bold text-sm shadow-md"
+                      style={{ background: meta.colorVar }}
+                    >
+                      {meta.label[0]}
+                    </span>
+                    <div>
+                      <CardTitle className="text-base font-bold">{meta.label}</CardTitle>
+                      <CardDescription className="text-xs">{meta.charLimit} max characters</CardDescription>
+                    </div>
+                  </div>
                 </div>
-                <CardDescription>{meta.charLimit} character limit</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
+
+                <div className="mt-4 rounded-xl border border-border/60 bg-background/60 p-3 flex items-center gap-2 text-xs">
                   {connected ? (
                     <>
-                      <CheckCircle2 className="size-4 text-success" />
-                      <span className="text-foreground">{acct?.display_name ?? "Connected"}</span>
+                      <CheckCircle2 className="size-4 text-success shrink-0" />
+                      <div className="truncate min-w-0">
+                        <span className="font-semibold text-foreground">{acct?.display_name ?? "Connected Profile"}</span>
+                        <div className="text-[10px] text-success">Active & Ready</div>
+                      </div>
                     </>
                   ) : (
                     <>
-                      <Plug className="size-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">Not connected</span>
+                      <Plug className="size-4 text-muted-foreground shrink-0" />
+                      <span className="text-muted-foreground">Not connected yet</span>
                     </>
                   )}
                 </div>
+              </div>
+
+              <div className="pt-2">
                 {connected ? (
-                  <Button variant="outline" className="w-full" onClick={() => disc.mutate(p)}>
-                    Disconnect
+                  <Button
+                    variant="outline"
+                    className="w-full text-xs border-border/80 text-muted-foreground hover:text-destructive hover:border-destructive/40"
+                    onClick={() => disc.mutate(p)}
+                  >
+                    <Unlink className="size-3.5" /> Disconnect Platform
                   </Button>
                 ) : (
-                  <Button className="w-full" onClick={() => setDialogFor(p)}>
-                    Connect {meta.label}
+                  <Button
+                    variant="gradient"
+                    className="w-full text-xs shadow-glow"
+                    onClick={() => setDialogFor(p)}
+                  >
+                    <Link2 className="size-3.5" /> Connect {meta.label}
                   </Button>
                 )}
-              </CardContent>
+              </div>
             </Card>
           );
         })}
       </div>
 
       <Dialog open={!!dialogFor} onOpenChange={(o) => !o && setDialogFor(null)}>
-        <DialogContent>
+        <DialogContent className="surface-card border-white/10 sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Connect {dialogFor ? PLATFORM_META[dialogFor].label : ""}</DialogTitle>
-            <DialogDescription>{dialogFor ? SETUP_NOTES[dialogFor] : ""}</DialogDescription>
+            <DialogTitle className="text-lg font-bold">
+              Connect {dialogFor ? PLATFORM_META[dialogFor].label : ""} Account
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              {dialogFor ? SETUP_NOTES[dialogFor] : ""}
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2">
-            <Label htmlFor="handle">Display name / handle</Label>
+
+          <div className="space-y-3 py-2">
+            <Label htmlFor="handle" className="text-xs font-semibold">Profile Display Name or Handle</Label>
             <Input
               id="handle"
-              placeholder="@yourhandle"
+              placeholder="@yourcompany"
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
               maxLength={80}
+              className="bg-background/80 border-border text-sm"
             />
-            <p className="text-xs text-muted-foreground">
-              This is a label to identify your connected account.
+            <p className="text-[11px] text-muted-foreground">
+              This identifier will be displayed in your studio dashboard for content targeting.
             </p>
           </div>
-          <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialogFor(null)}>
+
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setDialogFor(null)}>
               Cancel
             </Button>
             <Button
+              variant="gradient"
+              size="sm"
               disabled={!handle.trim() || connect.isPending}
               onClick={() =>
                 dialogFor && connect.mutate({ platform: dialogFor, displayName: handle.trim() })
               }
             >
-              Connect
+              Confirm Connection
             </Button>
           </DialogFooter>
         </DialogContent>

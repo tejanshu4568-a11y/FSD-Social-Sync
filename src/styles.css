@@ -5,9 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Broadcast — a modern social publishing tool.
- * Design language: dark canvas, electric cyan primary, warm coral accent.
- * All colors are semantic oklch tokens. Never hardcode in components.
+ * Broadcast — Studio Social Sync UI Design System.
+ * Dark luxury obsidian canvas, electric cyan primary, vibrant neon purple/violet accent, glassmorphism.
  */
 
 @theme inline {
@@ -17,6 +16,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -40,9 +40,11 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-brand-linkedin: var(--brand-linkedin);
   --color-brand-twitter: var(--brand-twitter);
   --color-brand-instagram: var(--brand-instagram);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -52,90 +54,93 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --shadow-glow: 0 0 40px -8px var(--glow);
-  --shadow-card: 0 1px 0 0 oklch(1 0 0 / 6%) inset, 0 8px 24px -12px oklch(0 0 0 / 40%);
+  --shadow-glow: 0 0 35px -5px oklch(0.76 0.18 195 / 0.35);
+  --shadow-glow-accent: 0 0 35px -5px oklch(0.72 0.22 310 / 0.35);
+  --shadow-card: 0 1px 0 0 oklch(1 0 0 / 10%) inset, 0 12px 32px -12px oklch(0 0 0 / 60%);
 
-  --gradient-brand: linear-gradient(135deg, oklch(0.72 0.18 210) 0%, oklch(0.68 0.2 260) 100%);
+  --gradient-brand: linear-gradient(135deg, oklch(0.78 0.19 195) 0%, oklch(0.72 0.22 310) 100%);
   --gradient-hero:
-    radial-gradient(ellipse at 20% 0%, oklch(0.35 0.14 240 / 0.6) 0%, transparent 55%),
-    radial-gradient(ellipse at 90% 100%, oklch(0.35 0.18 20 / 0.35) 0%, transparent 55%);
+    radial-gradient(ellipse at 15% 0%, oklch(0.38 0.18 260 / 0.45) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 90%, oklch(0.38 0.22 310 / 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, oklch(0.3 0.15 195 / 0.2) 0%, transparent 70%);
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.875rem;
 
-  /* Dark canvas by default — this is a studio-style tool */
-  --background: oklch(0.16 0.02 250);
-  --foreground: oklch(0.97 0.005 240);
-  --card: oklch(0.2 0.024 250);
-  --card-foreground: oklch(0.97 0.005 240);
-  --popover: oklch(0.19 0.024 250);
-  --popover-foreground: oklch(0.97 0.005 240);
+  /* Premium Obsidian Cyber Studio Theme */
+  --background: oklch(0.12 0.025 260);
+  --foreground: oklch(0.98 0.005 240);
 
-  --primary: oklch(0.75 0.16 210);
-  --primary-foreground: oklch(0.15 0.03 250);
+  --card: oklch(0.16 0.028 260 / 0.75);
+  --card-foreground: oklch(0.98 0.005 240);
 
-  --secondary: oklch(0.26 0.03 250);
-  --secondary-foreground: oklch(0.97 0.005 240);
+  --popover: oklch(0.15 0.028 260);
+  --popover-foreground: oklch(0.98 0.005 240);
 
-  --muted: oklch(0.24 0.025 250);
-  --muted-foreground: oklch(0.68 0.02 250);
+  --primary: oklch(0.78 0.19 195);
+  --primary-foreground: oklch(0.1 0.03 260);
 
-  --accent: oklch(0.72 0.18 25);
-  --accent-foreground: oklch(0.15 0.03 250);
+  --secondary: oklch(0.22 0.03 260);
+  --secondary-foreground: oklch(0.98 0.005 240);
 
-  --destructive: oklch(0.65 0.22 25);
+  --muted: oklch(0.2 0.025 260);
+  --muted-foreground: oklch(0.72 0.02 250);
+
+  --accent: oklch(0.72 0.22 310);
+  --accent-foreground: oklch(0.1 0.03 260);
+
+  --destructive: oklch(0.65 0.24 22);
   --destructive-foreground: oklch(0.98 0.005 240);
 
-  --success: oklch(0.72 0.15 155);
-  --success-foreground: oklch(0.15 0.03 250);
+  --success: oklch(0.75 0.18 160);
+  --success-foreground: oklch(0.1 0.03 260);
 
-  --warning: oklch(0.8 0.15 80);
-  --warning-foreground: oklch(0.15 0.03 250);
+  --warning: oklch(0.82 0.17 85);
+  --warning-foreground: oklch(0.1 0.03 260);
 
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.75 0.16 210);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.78 0.19 195);
 
-  --glow: oklch(0.75 0.16 210 / 0.35);
+  --glow: oklch(0.78 0.19 195 / 0.35);
 
-  --brand-linkedin: oklch(0.55 0.14 245);
-  --brand-twitter: oklch(0.78 0.03 240);
-  --brand-instagram: oklch(0.68 0.22 20);
+  --brand-linkedin: oklch(0.62 0.18 245);
+  --brand-twitter: oklch(0.75 0.12 210);
+  --brand-instagram: oklch(0.68 0.24 25);
 
-  --sidebar: oklch(0.14 0.02 250);
-  --sidebar-foreground: oklch(0.9 0.01 240);
-  --sidebar-primary: oklch(0.75 0.16 210);
-  --sidebar-primary-foreground: oklch(0.15 0.03 250);
-  --sidebar-accent: oklch(0.22 0.025 250);
-  --sidebar-accent-foreground: oklch(0.97 0.005 240);
-  --sidebar-border: oklch(1 0 0 / 6%);
-  --sidebar-ring: oklch(0.75 0.16 210);
+  --sidebar: oklch(0.11 0.025 260);
+  --sidebar-foreground: oklch(0.92 0.01 240);
+  --sidebar-primary: oklch(0.78 0.19 195);
+  --sidebar-primary-foreground: oklch(0.1 0.03 260);
+  --sidebar-accent: oklch(0.2 0.035 260);
+  --sidebar-accent-foreground: oklch(0.98 0.005 240);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.78 0.19 195);
 }
 
-/* Light theme — kept minimal; app defaults to dark */
 .light {
-  --background: oklch(0.99 0.003 240);
-  --foreground: oklch(0.18 0.02 250);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 250);
+  --background: oklch(0.98 0.005 240);
+  --foreground: oklch(0.14 0.025 260);
+  --card: oklch(1 0 0 / 0.85);
+  --card-foreground: oklch(0.14 0.025 260);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 250);
-  --primary: oklch(0.55 0.16 220);
+  --popover-foreground: oklch(0.14 0.025 260);
+  --primary: oklch(0.58 0.18 210);
   --primary-foreground: oklch(0.99 0.005 240);
-  --secondary: oklch(0.96 0.01 240);
-  --secondary-foreground: oklch(0.18 0.02 250);
-  --muted: oklch(0.96 0.01 240);
+  --secondary: oklch(0.94 0.015 240);
+  --secondary-foreground: oklch(0.14 0.025 260);
+  --muted: oklch(0.94 0.015 240);
   --muted-foreground: oklch(0.48 0.02 250);
-  --accent: oklch(0.65 0.18 25);
+  --accent: oklch(0.62 0.22 310);
   --accent-foreground: oklch(0.99 0.005 240);
-  --border: oklch(0.9 0.01 240);
-  --input: oklch(0.9 0.01 240);
-  --ring: oklch(0.55 0.16 220);
-  --glow: oklch(0.55 0.16 220 / 0.25);
+  --border: oklch(0.88 0.015 240);
+  --input: oklch(0.88 0.015 240);
+  --ring: oklch(0.58 0.18 210);
+  --glow: oklch(0.58 0.18 210 / 0.25);
 }
 
 @layer base {
@@ -153,6 +158,7 @@
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   h1,
@@ -160,7 +166,23 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
+  }
+
+  /* Custom glass scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: oklch(0.12 0.025 260);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(1 0 0 / 15%);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(1 0 0 / 25%);
   }
 }
 
@@ -183,9 +205,24 @@
   box-shadow: var(--shadow-glow);
 }
 
+@utility shadow-glow-accent {
+  box-shadow: var(--shadow-glow-accent);
+}
+
 @utility surface-card {
   background-color: var(--color-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+  transition: all 0.2s ease-in-out;
+}
+
+@utility surface-card-hover {
+  &:hover {
+    border-color: oklch(1 0 0 / 20%);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 40px -12px oklch(0 0 0 / 70%), 0 0 20px -5px oklch(0.78 0.19 195 / 0.15);
+  }
 }

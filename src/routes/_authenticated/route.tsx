@@ -9,9 +9,20 @@ import {
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Radio, LayoutDashboard, PencilLine, CalendarDays, Link2, LogOut, User, Sparkles } from "lucide-react";
+import {
+  Radio,
+  LayoutDashboard,
+  PencilLine,
+  CalendarDays,
+  Link2,
+  LogOut,
+  User,
+  Sparkles,
+  Settings,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { SetupModal } from "@/components/setup-modal";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -36,6 +47,7 @@ function AuthedShell() {
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [email, setEmail] = useState<string>(user.email ?? "");
+  const [setupOpen, setSetupOpen] = useState(false);
 
   useEffect(() => setEmail(user.email ?? ""), [user.email]);
 
@@ -87,11 +99,24 @@ function AuthedShell() {
                     : "text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground")
                 }
               >
-                <Icon className={`size-4 ${active ? "text-primary" : "text-muted-foreground"}`} />
+                <Icon
+                  className={`size-4 ${active ? "text-primary" : "text-muted-foreground"}`}
+                />
                 {label}
               </Link>
             );
           })}
+
+          <div className="pt-4 px-1">
+            <button
+              type="button"
+              onClick={() => setSetupOpen(true)}
+              className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-primary border border-primary/30 bg-primary/10 hover:bg-primary/20 transition-all cursor-pointer shadow-glow"
+            >
+              <Settings className="size-4 text-primary" />
+              <span>API & Supabase Setup</span>
+            </button>
+          </div>
         </nav>
 
         {/* User profile section */}
@@ -101,8 +126,12 @@ function AuthedShell() {
               {userInitial}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-xs font-semibold text-foreground">{email}</div>
-              <div className="text-[10px] text-muted-foreground">Connected Plan Pro</div>
+              <div className="truncate text-xs font-semibold text-foreground">
+                {email}
+              </div>
+              <div className="text-[10px] text-muted-foreground">
+                LinkedIn & Instagram Pro
+              </div>
             </div>
           </div>
 
@@ -122,15 +151,27 @@ function AuthedShell() {
       <div className="flex min-h-screen flex-1 flex-col min-w-0">
         {/* Mobile Header */}
         <header className="flex h-16 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-lg md:hidden sticky top-0 z-40">
-          <Link to="/dashboard" className="flex items-center gap-2 font-bold font-display text-lg">
+          <Link
+            to="/dashboard"
+            className="flex items-center gap-2 font-bold font-display text-lg"
+          >
             <span className="grid size-8 place-items-center rounded-lg bg-brand-gradient">
               <Radio className="size-4 text-primary-foreground" />
             </span>
             Broadcast
           </Link>
-          <Button variant="ghost" size="sm" onClick={signOut}>
-            <LogOut className="size-4" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSetupOpen(true)}
+            >
+              <Settings className="size-4 text-primary" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={signOut}>
+              <LogOut className="size-4" />
+            </Button>
+          </div>
         </header>
 
         {/* Dynamic Route Content */}
@@ -158,6 +199,8 @@ function AuthedShell() {
           })}
         </nav>
       </div>
+
+      <SetupModal open={setupOpen} onOpenChange={setSetupOpen} />
     </div>
   );
 }

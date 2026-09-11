@@ -5,3 +5,5 @@ dist
 .env
 .env.local
 .DS_Store
+FSD-Social-Sync-main/
+.tanstack/

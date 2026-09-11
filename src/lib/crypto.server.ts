@@ -1,5 +1,10 @@
 // Server-only AES-256-GCM helpers for encrypting OAuth tokens at rest.
-import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  randomBytes,
+} from "node:crypto";
 
 function getKey(): Buffer {
   const raw = process.env.TOKEN_ENCRYPTION_KEY;
@@ -22,5 +27,7 @@ export function decryptToken(stored: string): string {
   const ct = buf.subarray(28);
   const decipher = createDecipheriv("aes-256-gcm", getKey(), iv);
   decipher.setAuthTag(tag);
-  return Buffer.concat([decipher.update(ct), decipher.final()]).toString("utf8");
+  return Buffer.concat([decipher.update(ct), decipher.final()]).toString(
+    "utf8",
+  );
 }

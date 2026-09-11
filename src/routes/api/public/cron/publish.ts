@@ -6,7 +6,8 @@ export const Route = createFileRoute("/api/public/cron/publish")({
   server: {
     handlers: {
       POST: async () => {
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { supabaseAdmin } =
+          await import("@/integrations/supabase/client.server");
         const { publishPostById } = await import("@/lib/publisher.server");
 
         const { data: due, error } = await supabaseAdmin
@@ -15,9 +16,15 @@ export const Route = createFileRoute("/api/public/cron/publish")({
           .eq("status", "SCHEDULED")
           .lte("scheduled_for", new Date().toISOString())
           .limit(25);
-        if (error) return Response.json({ ok: false, error: error.message }, { status: 500 });
+        if (error)
+          return Response.json(
+            { ok: false, error: error.message },
+            { status: 500 },
+          );
 
-        const results = await Promise.allSettled((due ?? []).map((p) => publishPostById(p.id)));
+        const results = await Promise.allSettled(
+          (due ?? []).map((p) => publishPostById(p.id)),
+        );
 
         return Response.json({
           ok: true,
@@ -26,7 +33,8 @@ export const Route = createFileRoute("/api/public/cron/publish")({
           failed: results.filter((r) => r.status === "rejected").length,
         });
       },
-      GET: async () => Response.json({ ok: true, message: "publisher cron endpoint" }),
+      GET: async () =>
+        Response.json({ ok: true, message: "publisher cron endpoint" }),
     },
   },
 });

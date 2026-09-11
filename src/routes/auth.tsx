@@ -5,7 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { toast } from "sonner";
 import { Radio, Lock, Mail, ArrowRight, Sparkles } from "lucide-react";
 
@@ -20,7 +26,8 @@ export const Route = createFileRoute("/auth")({
       { title: "Sign in · Broadcast Studio" },
       {
         name: "description",
-        content: "Sign in to Broadcast to compose and schedule posts across your networks.",
+        content:
+          "Sign in to Broadcast to compose and schedule posts across your networks.",
       },
     ],
   }),
@@ -49,13 +56,18 @@ function AuthPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin + import.meta.env.BASE_URL },
+          options: {
+            emailRedirectTo: window.location.origin + import.meta.env.BASE_URL,
+          },
         });
         if (error) throw error;
         toast.success("Check your inbox to confirm your email, then sign in.");
         setMode("signin");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
         if (error) throw error;
         toast.success("Welcome back to Broadcast!");
         navigate({ to: "/dashboard", replace: true });
@@ -71,7 +83,9 @@ function AuthPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin + import.meta.env.BASE_URL },
+      options: {
+        redirectTo: window.location.origin + import.meta.env.BASE_URL,
+      },
     });
     if (error) {
       toast.error(error.message);
@@ -85,7 +99,10 @@ function AuthPage() {
       <div className="pointer-events-none absolute top-1/2 left-1/2 -z-10 h-[450px] w-[450px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/15 blur-[140px]" />
 
       <div className="w-full max-w-md my-8">
-        <Link to="/" className="mb-8 flex items-center justify-center gap-3 group">
+        <Link
+          to="/"
+          className="mb-8 flex items-center justify-center gap-3 group"
+        >
           <span className="grid size-10 place-items-center rounded-xl bg-brand-gradient shadow-glow group-hover:scale-105 transition-transform">
             <Radio className="size-5 text-primary-foreground" />
           </span>
@@ -140,15 +157,21 @@ function AuthPage() {
             </Button>
 
             <div className="relative text-center text-xs text-muted-foreground">
-              <span className="bg-card px-3 relative z-10 font-medium">or continue with email</span>
+              <span className="bg-card px-3 relative z-10 font-medium">
+                or continue with email
+              </span>
               <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border/60" />
             </div>
 
             {/* Email Form */}
             <form onSubmit={onSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs font-semibold flex items-center gap-1.5">
-                  <Mail className="size-3.5 text-muted-foreground" /> Email address
+                <Label
+                  htmlFor="email"
+                  className="text-xs font-semibold flex items-center gap-1.5"
+                >
+                  <Mail className="size-3.5 text-muted-foreground" /> Email
+                  address
                 </Label>
                 <Input
                   id="email"
@@ -163,14 +186,19 @@ function AuthPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-xs font-semibold flex items-center gap-1.5">
+                <Label
+                  htmlFor="password"
+                  className="text-xs font-semibold flex items-center gap-1.5"
+                >
                   <Lock className="size-3.5 text-muted-foreground" /> Password
                 </Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
-                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  autoComplete={
+                    mode === "signin" ? "current-password" : "new-password"
+                  }
                   required
                   minLength={8}
                   value={password}
@@ -179,14 +207,41 @@ function AuthPage() {
                 />
               </div>
 
-              <Button type="submit" variant="gradient" className="w-full h-11 text-base shadow-glow" disabled={loading}>
-                {loading ? "Authenticating…" : mode === "signin" ? (
-                  <span className="flex items-center justify-center gap-2">Sign in <ArrowRight className="size-4" /></span>
+              <Button
+                type="submit"
+                variant="gradient"
+                className="w-full h-11 text-base shadow-glow"
+                disabled={loading}
+              >
+                {loading ? (
+                  "Authenticating…"
+                ) : mode === "signin" ? (
+                  <span className="flex items-center justify-center gap-2">
+                    Sign in <ArrowRight className="size-4" />
+                  </span>
                 ) : (
-                  <span className="flex items-center justify-center gap-2">Create Studio Account <ArrowRight className="size-4" /></span>
+                  <span className="flex items-center justify-center gap-2">
+                    Create Studio Account <ArrowRight className="size-4" />
+                  </span>
                 )}
               </Button>
             </form>
+
+            <div className="relative text-center text-xs text-muted-foreground pt-1">
+              <div className="absolute inset-x-0 top-1/2 -z-0 h-px bg-border/40" />
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                toast.success("Entering Studio Sandbox Mode!");
+                navigate({ to: "/dashboard", replace: true });
+              }}
+              className="w-full h-10 border-primary/40 bg-primary/10 hover:bg-primary/20 text-xs font-semibold text-primary gap-2"
+            >
+              <Sparkles className="size-3.5" /> Explore Instant Sandbox Demo
+            </Button>
 
             <div className="pt-2 text-center text-xs text-muted-foreground">
               {mode === "signin" ? (

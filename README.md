@@ -1,122 +1,133 @@
-# Broadcast (social-sync-pro)
+# Social Sync Pro (Broadcast)
 
-Compose once, schedule everywhere — a small studio for planning posts across
-LinkedIn, X and Instagram. Built with [TanStack Start](https://tanstack.com/start)
-(React) and [Supabase](https://supabase.com) (auth + Postgres).
+Compose once, schedule everywhere — next-generation social publishing and automation studio built for **LinkedIn** and **Instagram**.
 
-This project was originally scaffolded in Lovable and has since been
-disconnected from it — see **What changed** below if you're curious.
+Built with [TanStack Start](https://tanstack.com/start) (React 19) and [Supabase](https://supabase.com) (Authentication + Postgres).
 
-## Run it locally
+---
 
-You'll need [Node.js](https://nodejs.org) 20+ and a Supabase project.
+## Features
+
+- **Multi-Network Composer**: Draft high-performing content once. Live character counters and validations adapted specifically for **LinkedIn** (3,000 char ceiling) and **Instagram** (2,200 char ceiling + media required).
+- **Live Social Previews**: Pixel-accurate preview cards showing how your post will look on LinkedIn feeds and Instagram profile posts.
+- **What is Happening (Live Monitor)**: Real-time animated dispatch pipeline ticker showing current handshakes, packaging steps, and connection health.
+- **What Happened (Audit Trail)**: Complete chronological event log showing publication timestamps, external delivery IDs (`urn:li:share:...`, `ig_media_...`), character counts, and status receipts.
+- **In-App API & Database Setup**: Configure Supabase credentials and social network tokens directly in the app with 1-click connection testing and instant local storage persistence.
+- **Zero-Friction Sandbox Demo**: Works instantly on the first try — even before entering API keys or database credentials.
+
+---
+
+## 🚀 Quick Start (Works on First Try)
 
 ```bash
+# 1. Install dependencies
 npm install
-cp .env.example .env   # then fill in your Supabase project's values (see below)
+
+# 2. Start local development server
 npm run dev
 ```
 
-Open the printed `localhost` URL. That's it — no Lovable account, no Lovable
-CLI, nothing beyond Node and your own Supabase project.
+Open `http://localhost:5173` (or the printed port) in your browser.
+Click **"Get Started"** or **"Explore Instant Sandbox Demo"** to access the studio immediately.
 
-### Getting your Supabase values
+---
 
-1. Create a free project at [supabase.com](https://supabase.com) if you don't
-   have one, or use your existing `xjbgzyneqiyvnflogyaf` project from before.
-2. Go to **Project Settings → API** and copy the **Project URL**, **Project
-   ID**, and the **`publishable`** key (not the `secret` one) into `.env`.
-3. Run the SQL files in `supabase/migrations/` against your database, in
-   order — either by pasting each into the Supabase SQL Editor, or with the
-   [Supabase CLI](https://supabase.com/docs/guides/cli) (`supabase db push`).
-   If you're reusing the same Supabase project this app already had, only
-   the newest migration (`20260720120000_client_side_publish_results.sql`)
-   is new and needs to be applied.
+## 🔑 Connecting Supabase (Step-by-Step)
 
-### Optional: Google sign-in
+You can connect Supabase either via the **In-App Setup Center** (click **"API & Supabase Setup"** in the sidebar) or via a `.env` file.
 
-Email/password sign-in works with zero extra setup. Google sign-in needs the
-Google provider turned on in your Supabase dashboard:
-**Authentication → Providers → Google** (you'll need a Google Cloud OAuth
-client ID/secret — Supabase's docs walk through this). If you skip this,
-email/password sign-in still works fine.
+### Step 1: Create a Supabase Project
+1. Go to [supabase.com](https://supabase.com) and log in or create a free account.
+2. Click **New Project**, choose a name (e.g. `social-sync-pro`), set a database password, and choose your region.
 
-## Deploy to GitHub Pages
+### Step 2: Run the Complete Schema
+1. In your Supabase dashboard, click **SQL Editor** from the left sidebar.
+2. Click **New Query**.
+3. Open `supabase/schema-complete.sql` from this repository (or copy it directly using the **"Copy Complete SQL"** button inside the in-app Setup Center).
+4. Paste the SQL into the editor and click **Run**.
+   *This automatically creates the enums, profiles, posts, connected_accounts, post_results tables, RLS policies, and the post-media storage bucket.*
 
-A workflow at `.github/workflows/deploy.yml` builds and deploys this
-automatically on every push to `main`. Setup is one-time:
+### Step 3: Copy Your API Keys
+1. Go to **Project Settings → API** in your Supabase dashboard.
+2. Copy:
+   - **Project URL** (e.g. `https://your-project.supabase.co`)
+   - **anon / publishable API key**
 
-1. **Push this to a GitHub repo.**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/<your-username>/<your-repo>.git
-   git push -u origin main
-   ```
-   (Create the empty repo on GitHub first, via github.com/new — don't
-   initialize it with a README there, to avoid a merge conflict with this one.)
+### Step 4: Input the Keys
+Either:
+- **In the UI**: Click **"API & Supabase Setup"** in the studio sidebar, paste your URL & Anon Key, click **"Test Connection"**, and toggle mode to **Live Supabase**.
+- **In `.env`**: Copy `.env.example` to `.env` and fill in:
+  ```env
+  VITE_SUPABASE_URL=https://your-project-id.supabase.co
+  VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+  ```
 
-2. **Add your Supabase values as repository secrets** — Settings → Secrets
-   and variables → Actions → New repository secret. Add all three:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`
-   - `VITE_SUPABASE_PROJECT_ID`
+---
 
-   (These get baked into the built JS bundle at build time — that's normal
-   and safe. Supabase's "publishable" key is meant to be public; your data
-   is protected by Row Level Security, not by hiding this key.)
+## 🌐 Connecting Social Network API Keys
 
-3. **Turn on Pages** — Settings → Pages → Source: **GitHub Actions**.
+### 1. LinkedIn Developer API
+1. Visit the [LinkedIn Developer Portal](https://developer.linkedin.com/) and sign in.
+2. Click **Create App**. Fill in your App Name and link it to your LinkedIn Company Page.
+3. Under the **Products** tab, request access to:
+   - **Share on LinkedIn**
+   - **Sign In with LinkedIn using OpenID Connect**
+4. Under the **Auth** tab:
+   - Copy your **Client ID** and **Client Secret**.
+   - Add your OAuth redirect URL (e.g. `http://localhost:5173` or your production domain).
+5. In Social Sync Pro, open **"API & Supabase Setup" → API Keys** and paste your **Client ID**, **Client Secret**, or user access token.
 
-4. **Push again** (or re-run the workflow from the Actions tab) to trigger a
-   deploy. Once it finishes, your site is live at
-   `https://<your-username>.github.io/<your-repo>/`.
+### 2. Instagram Graph API
+1. Ensure your Instagram account is an **Instagram Professional / Creator** account.
+2. Link your Instagram account to a **Facebook Page** (via Instagram Settings → Linked Accounts).
+3. Go to [Meta for Developers](https://developers.facebook.com/) and click **My Apps → Create App**.
+4. Select app type **Business**.
+5. Add the **Instagram Graph API** product to your app.
+6. Use the Graph API Explorer to generate a User Access Token with permissions:
+   - `instagram_basic`
+   - `instagram_content_publish`
+   - `pages_show_list`
+   - `pages_read_engagement`
+7. Copy your **Meta App ID**, **Instagram Business Account ID**, and **Page Access Token** into Social Sync Pro under **"API & Supabase Setup" → API Keys**.
 
-5. **Add that URL to Supabase's allow-list** — Authentication → URL
-   Configuration → Redirect URLs, add
-   `https://<your-username>.github.io/<your-repo>/**`. Without this, sign-up
-   confirmation emails and Google sign-in will redirect somewhere Supabase
-   refuses to send them back to.
+---
 
-After that, every push to `main` redeploys automatically — no manual steps.
+## 🛠️ Project Structure
 
-## What changed (Lovable → standalone)
+```
+├── src/
+│   ├── components/
+│   │   ├── live-activity-feed.tsx  # "What is happening" & "What happened" monitor
+│   │   ├── setup-modal.tsx         # In-app Supabase & API keys settings dialog
+│   │   └── ui/                     # Radix UI + Tailwind design system components
+│   ├── integrations/supabase/
+│   │   ├── client.ts               # Resilient Supabase client with demo fallback
+│   │   └── types.ts                # Database types (LinkedIn & Instagram)
+│   ├── lib/
+│   │   ├── activity-store.ts       # Event log & active dispatch job store
+│   │   ├── supabase-config.ts      # API & Supabase config manager + test ping
+│   │   ├── platform-constraints.ts # Limits for LinkedIn & Instagram
+│   │   ├── posts.functions.ts      # Post creation, listing & deletion
+│   │   ├── accounts.functions.ts   # Account connections & status
+│   │   └── publisher.client.ts     # Client dispatch engine with live progress
+│   └── routes/
+│       ├── _authenticated/
+│       │   ├── dashboard.tsx       # Overview, metrics & live activity center
+│       │   ├── composer.tsx        # Unified post composer & live preview
+│       │   ├── accounts.tsx        # LinkedIn & Instagram profile manager
+│       │   └── calendar.tsx        # Queue timeline & schedule manager
+│       ├── auth.tsx                # Studio authentication & 1-click sandbox
+│       └── index.tsx               # Product landing page & interactive preview
+├── supabase/
+│   └── schema-complete.sql         # 1-click turnkey Supabase schema
+└── vite.config.ts                  # Vite + TanStack Start configuration
+```
 
-- Removed the `@lovable.dev/*` packages, the `.lovable/` folder, and the
-  Lovable error-reporting hook. Google sign-in now goes through Supabase's
-  own OAuth instead of Lovable's broker.
-- `vite.config.ts` no longer depends on Lovable's config preset — it's a
-  plain TanStack Start + Vite config now, with **SPA mode** turned on.
-- **Why SPA mode:** this app was built with TanStack Start, a full-stack
-  framework — parts of it (a cron-triggered publish endpoint, a service-role
-  database client) are genuine server code. GitHub Pages only serves static
-  files; it can't run a server at all. SPA mode prerenders a static shell
-  that hydrates into a full app in the browser, and the app's data layer
-  (`src/lib/posts.functions.ts`, `src/lib/accounts.functions.ts`) now talks
-  to Supabase directly from the browser instead of through server functions
-  — safe, because every table's Row Level Security already scopes each user
-  to their own rows.
-- **The one real trade-off:** the scheduled auto-publish cron job
-  (`src/routes/api/public/cron/publish.ts`) needs a live server to run on a
-  schedule, which static hosting can't provide. It's untouched in the repo
-  but won't fire on GitHub Pages. This isn't a functionality regression
-  today — publishing to LinkedIn/X/Instagram is still a simulated stub (see
-  `src/lib/publisher.client.ts`), not real API calls, so nothing that
-  currently works for real is lost.
-- **"Post now"** still works — it's simulated client-side now
-  (`src/lib/publisher.client.ts`) instead of on the server
-  (`src/lib/publisher.server.ts`, kept in the repo but unused by the GitHub
-  Pages build).
+---
 
-### If you want real scheduled publishing later
+## 🚢 Production Build
 
-The cleanest fit is a [Supabase Edge Function](https://supabase.com/docs/guides/functions)
-— it runs on Supabase's own infrastructure (separate from GitHub Pages), can
-be woken up by `pg_cron` on a schedule, and can hold real OAuth tokens
-without ever exposing them to the browser. `src/lib/publisher.server.ts` and
-`src/lib/crypto.server.ts` are a solid starting point for that function's
-logic. At that point, also tighten `post_results`' Row Level Security back
-down (see the comment in `supabase/migrations/20260720120000_client_side_publish_results.sql`)
-so only that trusted function can write results, not a user's browser.
+```bash
+npm run build
+npm run preview
+```

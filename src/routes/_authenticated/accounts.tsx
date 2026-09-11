@@ -1,13 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Suspense, useState } from "react";
-import { useSuspenseQuery, queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useSuspenseQuery,
+  queryOptions,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   listConnectedAccounts,
   stubConnectAccount,
   disconnectAccount,
 } from "@/lib/accounts.functions";
-import { PLATFORM_META, PLATFORMS, type Platform } from "@/lib/platform-constraints";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  PLATFORM_META,
+  PLATFORMS,
+  type Platform,
+} from "@/lib/platform-constraints";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,16 +34,34 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CheckCircle2, Plug, Sparkles, Link2, Unlink } from "lucide-react";
+import {
+  CheckCircle2,
+  Plug,
+  Sparkles,
+  Link2,
+  Unlink,
+  Settings,
+  Key,
+} from "lucide-react";
 import { toast } from "sonner";
+import { SetupModal } from "@/components/setup-modal";
 
-const acctsQO = queryOptions({ queryKey: ["accounts"], queryFn: () => listConnectedAccounts() });
+const acctsQO = queryOptions({
+  queryKey: ["accounts"],
+  queryFn: () => listConnectedAccounts(),
+});
 
 export const Route = createFileRoute("/_authenticated/accounts")({
   loader: ({ context }) => context.queryClient.ensureQueryData(acctsQO),
   head: () => ({ meta: [{ title: "Connected Accounts · Broadcast" }] }),
   component: () => (
-    <Suspense fallback={<div className="flex items-center justify-center py-20 text-muted-foreground text-sm font-semibold">Loading Connected Accounts…</div>}>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center py-20 text-muted-foreground text-sm font-semibold">
+          Loading Connected Accounts…
+        </div>
+      }
+    >
       <Inner />
     </Suspense>
   ),
@@ -37,8 +70,6 @@ export const Route = createFileRoute("/_authenticated/accounts")({
 const SETUP_NOTES: Record<Platform, string> = {
   linkedin:
     "Connect your LinkedIn profile or Company Page to sync professional posts directly from Broadcast.",
-  twitter:
-    "Connect your X (Twitter) handle to broadcast posts, threads, and short updates.",
   instagram:
     "Connect your Instagram Business or Creator profile to schedule visual posts and captions.",
 };
@@ -49,10 +80,13 @@ function Inner() {
 
   const [dialogFor, setDialogFor] = useState<Platform | null>(null);
   const [handle, setHandle] = useState("");
+  const [setupOpen, setSetupOpen] = useState(false);
 
   const connect = useMutation({
     mutationFn: (p: { platform: Platform; displayName: string }) =>
-      stubConnectAccount({ data: { platform: p.platform, displayName: p.displayName } }),
+      stubConnectAccount({
+        data: { platform: p.platform, displayName: p.displayName },
+      }),
     onSuccess: () => {
       toast.success("Social network account connected!");
       setDialogFor(null);
@@ -63,7 +97,8 @@ function Inner() {
   });
 
   const disc = useMutation({
-    mutationFn: (platform: Platform) => disconnectAccount({ data: { platform } }),
+    mutationFn: (platform: Platform) =>
+      disconnectAccount({ data: { platform } }),
     onSuccess: () => {
       toast.success("Account disconnected");
       qc.invalidateQueries({ queryKey: ["accounts"] });
@@ -78,18 +113,33 @@ function Inner() {
           <div className="flex items-center gap-2 text-xs font-semibold text-primary mb-1">
             <Sparkles className="size-3.5" /> Studio Integration Center
           </div>
-          <h1 className="text-3xl font-extrabold font-display tracking-tight">Connected Accounts</h1>
-          <p className="text-sm text-muted-foreground">Manage authorized profiles across supported social networks.</p>
+          <h1 className="text-3xl font-extrabold font-display tracking-tight">
+            Connected Accounts
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Manage authorized profiles across LinkedIn and Instagram.
+          </p>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setSetupOpen(true)}
+          className="text-xs gap-2 border-primary/30 text-primary hover:bg-primary/10"
+        >
+          <Key className="size-3.5" /> Configure Developer API Keys
+        </Button>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 max-w-4xl">
         {PLATFORMS.map((p) => {
           const meta = PLATFORM_META[p];
           const acct = accounts.find((a) => a.platform === p);
           const connected = !!acct?.connected;
           return (
-            <Card key={p} className="surface-card surface-card-hover p-6 flex flex-col justify-between space-y-4">
+            <Card
+              key={p}
+              className="surface-card surface-card-hover p-6 flex flex-col justify-between space-y-4"
+            >
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -100,8 +150,12 @@ function Inner() {
                       {meta.label[0]}
                     </span>
                     <div>
-                      <CardTitle className="text-base font-bold">{meta.label}</CardTitle>
-                      <CardDescription className="text-xs">{meta.charLimit} max characters</CardDescription>
+                      <CardTitle className="text-base font-bold">
+                        {meta.label}
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        {meta.charLimit} max characters
+                      </CardDescription>
                     </div>
                   </div>
                 </div>
@@ -111,14 +165,20 @@ function Inner() {
                     <>
                       <CheckCircle2 className="size-4 text-success shrink-0" />
                       <div className="truncate min-w-0">
-                        <span className="font-semibold text-foreground">{acct?.display_name ?? "Connected Profile"}</span>
-                        <div className="text-[10px] text-success">Active & Ready</div>
+                        <span className="font-semibold text-foreground">
+                          {acct?.display_name ?? "Connected Profile"}
+                        </span>
+                        <div className="text-[10px] text-success">
+                          Active & Ready
+                        </div>
                       </div>
                     </>
                   ) : (
                     <>
                       <Plug className="size-4 text-muted-foreground shrink-0" />
-                      <span className="text-muted-foreground">Not connected yet</span>
+                      <span className="text-muted-foreground">
+                        Not connected yet
+                      </span>
                     </>
                   )}
                 </div>
@@ -160,7 +220,9 @@ function Inner() {
           </DialogHeader>
 
           <div className="space-y-3 py-2">
-            <Label htmlFor="handle" className="text-xs font-semibold">Profile Display Name or Handle</Label>
+            <Label htmlFor="handle" className="text-xs font-semibold">
+              Profile Display Name or Handle
+            </Label>
             <Input
               id="handle"
               placeholder="@yourcompany"
@@ -170,12 +232,17 @@ function Inner() {
               className="bg-background/80 border-border text-sm"
             />
             <p className="text-[11px] text-muted-foreground">
-              This identifier will be displayed in your studio dashboard for content targeting.
+              This identifier will be displayed in your studio dashboard for
+              content targeting.
             </p>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setDialogFor(null)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setDialogFor(null)}
+            >
               Cancel
             </Button>
             <Button
@@ -183,7 +250,11 @@ function Inner() {
               size="sm"
               disabled={!handle.trim() || connect.isPending}
               onClick={() =>
-                dialogFor && connect.mutate({ platform: dialogFor, displayName: handle.trim() })
+                dialogFor &&
+                connect.mutate({
+                  platform: dialogFor,
+                  displayName: handle.trim(),
+                })
               }
             >
               Confirm Connection
@@ -191,6 +262,8 @@ function Inner() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <SetupModal open={setupOpen} onOpenChange={setSetupOpen} />
     </div>
   );
 }

@@ -56,16 +56,34 @@
 
   --shadow-glow: 0 0 35px -5px oklch(0.76 0.18 195 / 0.35);
   --shadow-glow-accent: 0 0 35px -5px oklch(0.72 0.22 310 / 0.35);
-  --shadow-card: 0 1px 0 0 oklch(1 0 0 / 10%) inset, 0 12px 32px -12px oklch(0 0 0 / 60%);
+  --shadow-card:
+    0 1px 0 0 oklch(1 0 0 / 10%) inset, 0 12px 32px -12px oklch(0 0 0 / 60%);
 
-  --gradient-brand: linear-gradient(135deg, oklch(0.78 0.19 195) 0%, oklch(0.72 0.22 310) 100%);
+  --gradient-brand: linear-gradient(
+    135deg,
+    oklch(0.78 0.19 195) 0%,
+    oklch(0.72 0.22 310) 100%
+  );
   --gradient-hero:
-    radial-gradient(ellipse at 15% 0%, oklch(0.38 0.18 260 / 0.45) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 90%, oklch(0.38 0.22 310 / 0.35) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 50%, oklch(0.3 0.15 195 / 0.2) 0%, transparent 70%);
+    radial-gradient(
+      ellipse at 15% 0%,
+      oklch(0.38 0.18 260 / 0.45) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 85% 90%,
+      oklch(0.38 0.22 310 / 0.35) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      oklch(0.3 0.15 195 / 0.2) 0%,
+      transparent 70%
+    );
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -223,6 +241,8 @@
   &:hover {
     border-color: oklch(1 0 0 / 20%);
     transform: translateY(-2px);
-    box-shadow: 0 16px 40px -12px oklch(0 0 0 / 70%), 0 0 20px -5px oklch(0.78 0.19 195 / 0.15);
+    box-shadow:
+      0 16px 40px -12px oklch(0 0 0 / 70%),
+      0 0 20px -5px oklch(0.78 0.19 195 / 0.15);
   }
 }

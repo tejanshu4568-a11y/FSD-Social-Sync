@@ -1,4 +1,10 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options
@@ -197,8 +203,9 @@ export type Database = {
     Enums: {
       app_role: "admin" | "user";
       platform_result_status: "PENDING" | "SUCCESS" | "FAILED";
-      post_status: "DRAFT" | "SCHEDULED" | "PUBLISHING" | "PUBLISHED" | "FAILED";
-      social_platform: "linkedin" | "twitter" | "instagram";
+      post_status:
+        "DRAFT" | "SCHEDULED" | "PUBLISHING" | "PUBLISHED" | "FAILED";
+      social_platform: "linkedin" | "instagram";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -208,7 +215,10 @@ export type Database = {
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<
+  keyof Database,
+  "public"
+>];
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
@@ -229,8 +239,10 @@ export type Tables<
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R;
       }
       ? R
@@ -303,7 +315,8 @@ export type Enums<
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    keyof DefaultSchema["CompositeTypes"] | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
@@ -323,7 +336,7 @@ export const Constants = {
       app_role: ["admin", "user"],
       platform_result_status: ["PENDING", "SUCCESS", "FAILED"],
       post_status: ["DRAFT", "SCHEDULED", "PUBLISHING", "PUBLISHED", "FAILED"],
-      social_platform: ["linkedin", "twitter", "instagram"],
+      social_platform: ["linkedin", "instagram"],
     },
   },
 } as const;

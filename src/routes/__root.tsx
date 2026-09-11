@@ -18,7 +18,9 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background bg-hero px-4">
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-brand-gradient">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">
+          Page not found
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
@@ -72,41 +74,53 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Broadcast — Publish to LinkedIn, X and Instagram from one place" },
-      {
-        name: "description",
-        content:
-          "Compose once, schedule everywhere. Broadcast is a lightweight studio for teams that publish to LinkedIn, X and Instagram on a plan.",
-      },
-      { name: "author", content: "Broadcast" },
-      { property: "og:title", content: "Broadcast — one composer for every network" },
-      {
-        property: "og:description",
-        content:
-          "Compose once, schedule everywhere. Publish to LinkedIn, X and Instagram from one clean studio.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap",
-      },
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: `${import.meta.env.BASE_URL}favicon.ico`, type: "image/x-icon" },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        {
+          title:
+            "Broadcast — Publish to LinkedIn, X and Instagram from one place",
+        },
+        {
+          name: "description",
+          content:
+            "Compose once, schedule everywhere. Broadcast is a lightweight studio for teams that publish to LinkedIn, X and Instagram on a plan.",
+        },
+        { name: "author", content: "Broadcast" },
+        {
+          property: "og:title",
+          content: "Broadcast — one composer for every network",
+        },
+        {
+          property: "og:description",
+          content:
+            "Compose once, schedule everywhere. Publish to LinkedIn, X and Instagram from one clean studio.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap",
+        },
+        { rel: "stylesheet", href: appCss },
+        {
+          rel: "icon",
+          href: `${import.meta.env.BASE_URL}favicon.ico`,
+          type: "image/x-icon",
+        },
+      ],
+    }),
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  },
+);
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -128,7 +142,12 @@ function RootComponent() {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {
-      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      if (
+        event !== "SIGNED_IN" &&
+        event !== "SIGNED_OUT" &&
+        event !== "USER_UPDATED"
+      )
+        return;
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
     });

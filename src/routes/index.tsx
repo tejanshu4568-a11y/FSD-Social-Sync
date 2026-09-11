@@ -31,7 +31,9 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const [signedIn, setSignedIn] = useState(false);
-  const [activePlatformTab, setActivePlatformTab] = useState<"linkedin" | "twitter" | "instagram">("linkedin");
+  const [activePlatformTab, setActivePlatformTab] = useState<
+    "linkedin" | "instagram"
+  >("linkedin");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
@@ -41,19 +43,15 @@ function Landing() {
     linkedin: {
       author: "Alex Rivera",
       role: "Founder & Product Lead",
-      content: "We just launched our new social media automation pipeline! Compose once, adapt for each platform, and publish seamlessly with real-time delivery status.",
+      content:
+        "We just launched our new social media automation pipeline! Compose once, adapt for each platform, and publish seamlessly with real-time delivery status.",
       badge: "LinkedIn Post • 184 / 3000 chars",
-    },
-    twitter: {
-      author: "@alexrivera",
-      role: "Building in public",
-      content: "🚀 Stop context-switching across 5 tabs just to post a single update. Broadcast syncs your posts to X, LinkedIn, and Instagram in 1 click.",
-      badge: "X (Twitter) Tweet • 138 / 280 chars",
     },
     instagram: {
       author: "alex.rivera.studio",
       role: "Digital Creator",
-      content: "Visual storytelling made effortless. Schedule your content calendar weeks in advance with automatic image processing and hashtag optimization. ✨ #SocialSync #ContentCreator",
+      content:
+        "Visual storytelling made effortless. Schedule your content calendar weeks in advance with automatic image processing and hashtag optimization. ✨ #SocialSync #ContentCreator",
       badge: "Instagram Caption • 162 / 2200 chars",
     },
   };
@@ -119,14 +117,20 @@ function Landing() {
           </h1>
 
           <p className="mt-6 text-lg text-muted-foreground sm:text-xl max-w-2xl mx-auto leading-relaxed">
-            Eliminate context switching. Craft, adapt, and schedule high-performing content across{" "}
-            <span className="text-foreground font-semibold">LinkedIn</span>,{" "}
-            <span className="text-foreground font-semibold">X (Twitter)</span>, and{" "}
-            <span className="text-foreground font-semibold">Instagram</span> with live per-platform constraints and real-time delivery logs.
+            Eliminate context switching. Craft, adapt, and schedule
+            high-performing content across{" "}
+            <span className="text-foreground font-semibold">LinkedIn</span> and{" "}
+            <span className="text-foreground font-semibold">Instagram</span>{" "}
+            with live per-platform constraints and real-time delivery logs.
           </p>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Button asChild variant="gradient" size="lg" className="px-8 shadow-glow">
+            <Button
+              asChild
+              variant="gradient"
+              size="lg"
+              className="px-8 shadow-glow"
+            >
               <Link to="/auth" search={{ mode: "signup" }}>
                 Start Publishing Free <ArrowRight className="size-5" />
               </Link>
@@ -139,13 +143,16 @@ function Landing() {
           {/* Key Badges */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-success" /> Supabase Multi-Tenant Auth
+              <CheckCircle2 className="size-4 text-success" /> Supabase
+              Multi-Tenant Auth
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-success" /> Live Character Limiters
+              <CheckCircle2 className="size-4 text-success" /> Live Character
+              Limiters
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="size-4 text-success" /> Media Upload Pipeline
+              <CheckCircle2 className="size-4 text-success" /> Media Upload
+              Pipeline
             </div>
           </div>
         </section>
@@ -158,10 +165,12 @@ function Landing() {
                 <span className="size-3 rounded-full bg-red-500/80" />
                 <span className="size-3 rounded-full bg-yellow-500/80" />
                 <span className="size-3 rounded-full bg-green-500/80" />
-                <span className="ml-2 text-xs font-mono text-muted-foreground">studio-preview.internal</span>
+                <span className="ml-2 text-xs font-mono text-muted-foreground">
+                  studio-preview.internal
+                </span>
               </div>
               <div className="flex rounded-lg bg-secondary/80 p-1 gap-1">
-                {(["linkedin", "twitter", "instagram"] as const).map((platform) => (
+                {(["linkedin", "instagram"] as const).map((platform) => (
                   <button
                     key={platform}
                     onClick={() => setActivePlatformTab(platform)}
@@ -172,7 +181,7 @@ function Landing() {
                         : "text-muted-foreground hover:text-foreground")
                     }
                   >
-                    {platform === "twitter" ? "X / Twitter" : platform}
+                    {platform}
                   </button>
                 ))}
               </div>
@@ -204,9 +213,15 @@ function Landing() {
 
               <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-between text-xs text-muted-foreground">
                 <div className="flex items-center gap-4">
-                  <span className="hover:text-primary cursor-pointer transition-colors">❤️ 142 Likes</span>
-                  <span className="hover:text-primary cursor-pointer transition-colors">💬 28 Comments</span>
-                  <span className="hover:text-primary cursor-pointer transition-colors">🔁 19 Shares</span>
+                  <span className="hover:text-primary cursor-pointer transition-colors">
+                    ❤️ 142 Likes
+                  </span>
+                  <span className="hover:text-primary cursor-pointer transition-colors">
+                    💬 28 Comments
+                  </span>
+                  <span className="hover:text-primary cursor-pointer transition-colors">
+                    🔁 19 Shares
+                  </span>
                 </div>
                 <span className="text-primary font-medium flex items-center gap-1">
                   Ready to Sync <Zap className="size-3 fill-primary" />
@@ -246,7 +261,9 @@ function Landing() {
                 <Icon className={`size-6 ${color}`} />
               </div>
               <h3 className="text-xl font-bold font-display">{title}</h3>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{body}</p>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                {body}
+              </p>
             </div>
           ))}
         </section>
@@ -255,20 +272,36 @@ function Landing() {
         <section className="mb-24 surface-card p-8 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-card to-accent/10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
-              <div className="text-3xl font-extrabold text-brand-gradient font-display">3 Networks</div>
-              <div className="text-xs text-muted-foreground mt-1">LinkedIn, X, Instagram</div>
+              <div className="text-3xl font-extrabold text-brand-gradient font-display">
+                3 Networks
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                LinkedIn, X, Instagram
+              </div>
             </div>
             <div>
-              <div className="text-3xl font-extrabold text-foreground font-display">100%</div>
-              <div className="text-xs text-muted-foreground mt-1">Feature Parity</div>
+              <div className="text-3xl font-extrabold text-foreground font-display">
+                100%
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Feature Parity
+              </div>
             </div>
             <div>
-              <div className="text-3xl font-extrabold text-brand-gradient font-display">Real-Time</div>
-              <div className="text-xs text-muted-foreground mt-1">Supabase Database Sync</div>
+              <div className="text-3xl font-extrabold text-brand-gradient font-display">
+                Real-Time
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Supabase Database Sync
+              </div>
             </div>
             <div>
-              <div className="text-3xl font-extrabold text-foreground font-display">Zero</div>
-              <div className="text-xs text-muted-foreground mt-1">Context Switching</div>
+              <div className="text-3xl font-extrabold text-foreground font-display">
+                Zero
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Context Switching
+              </div>
             </div>
           </div>
         </section>
@@ -279,7 +312,9 @@ function Landing() {
         <div className="mx-auto max-w-7xl px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
             <Radio className="size-4 text-primary" />
-            <span className="font-semibold text-foreground">Broadcast Social Sync</span>
+            <span className="font-semibold text-foreground">
+              Broadcast Social Sync
+            </span>
             <span>· Built for teams that ship consistently.</span>
           </div>
           <div>Powered by React 19, TanStack Start & Supabase</div>

@@ -273,10 +273,10 @@ function Landing() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div>
               <div className="text-3xl font-extrabold text-brand-gradient font-display">
-                3 Networks
+                2 Networks
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                LinkedIn, X, Instagram
+                LinkedIn & Instagram
               </div>
             </div>
             <div>

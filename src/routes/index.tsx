@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Compose once, schedule everywhere. Next-generation social media sync & automation platform for LinkedIn, X, and Instagram.",
+          "Compose once, schedule everywhere. Next-generation social media sync & automation platform for LinkedIn and Instagram.",
       },
     ],
   }),

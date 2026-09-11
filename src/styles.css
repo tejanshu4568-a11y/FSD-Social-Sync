@@ -42,7 +42,6 @@
   --color-ring: var(--ring);
 
   --color-brand-linkedin: var(--brand-linkedin);
-  --color-brand-twitter: var(--brand-twitter);
   --color-brand-instagram: var(--brand-instagram);
 
   --color-sidebar: var(--sidebar);
@@ -127,7 +126,6 @@
   --glow: oklch(0.78 0.19 195 / 0.35);
 
   --brand-linkedin: oklch(0.62 0.18 245);
-  --brand-twitter: oklch(0.75 0.12 210);
   --brand-instagram: oklch(0.68 0.24 25);
 
   --sidebar: oklch(0.11 0.025 260);

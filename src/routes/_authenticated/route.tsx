@@ -19,6 +19,7 @@ import {
   User,
   Sparkles,
   Settings,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/_authenticated")({
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/composer", label: "Composer", icon: PencilLine },
+  { to: "/library", label: "Library", icon: BookOpen },
   { to: "/calendar", label: "Calendar", icon: CalendarDays },
   { to: "/accounts", label: "Accounts", icon: Link2 },
 ] as const;
@@ -180,7 +182,7 @@ function AuthedShell() {
         </main>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="sticky bottom-0 z-40 grid grid-cols-4 border-t border-border bg-background/90 backdrop-blur-xl md:hidden">
+        <nav className="sticky bottom-0 z-40 grid grid-cols-5 border-t border-border bg-background/90 backdrop-blur-xl md:hidden">
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to || pathname.startsWith(to + "/");
             return (

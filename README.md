@@ -37,24 +37,29 @@ Click **"Get Started"** or **"Explore Instant Sandbox Demo"** to access the stud
 You can connect Supabase either via the **In-App Setup Center** (click **"API & Supabase Setup"** in the sidebar) or via a `.env` file.
 
 ### Step 1: Create a Supabase Project
+
 1. Go to [supabase.com](https://supabase.com) and log in or create a free account.
 2. Click **New Project**, choose a name (e.g. `social-sync-pro`), set a database password, and choose your region.
 
 ### Step 2: Run the Complete Schema
+
 1. In your Supabase dashboard, click **SQL Editor** from the left sidebar.
 2. Click **New Query**.
 3. Open `supabase/schema-complete.sql` from this repository (or copy it directly using the **"Copy Complete SQL"** button inside the in-app Setup Center).
 4. Paste the SQL into the editor and click **Run**.
-   *This automatically creates the enums, profiles, posts, connected_accounts, post_results tables, RLS policies, and the post-media storage bucket.*
+   _This automatically creates the enums, profiles, posts, connected_accounts, post_results tables, RLS policies, and the post-media storage bucket._
 
 ### Step 3: Copy Your API Keys
+
 1. Go to **Project Settings → API** in your Supabase dashboard.
 2. Copy:
    - **Project URL** (e.g. `https://your-project.supabase.co`)
    - **anon / publishable API key**
 
 ### Step 4: Input the Keys
+
 Either:
+
 - **In the UI**: Click **"API & Supabase Setup"** in the studio sidebar, paste your URL & Anon Key, click **"Test Connection"**, and toggle mode to **Live Supabase**.
 - **In `.env`**: Copy `.env.example` to `.env` and fill in:
   ```env
@@ -67,6 +72,7 @@ Either:
 ## 🌐 Connecting Social Network API Keys
 
 ### 1. LinkedIn Developer API
+
 1. Visit the [LinkedIn Developer Portal](https://developer.linkedin.com/) and sign in.
 2. Click **Create App**. Fill in your App Name and link it to your LinkedIn Company Page.
 3. Under the **Products** tab, request access to:
@@ -78,6 +84,7 @@ Either:
 5. In Social Sync Pro, open **"API & Supabase Setup" → API Keys** and paste your **Client ID**, **Client Secret**, or user access token.
 
 ### 2. Instagram Graph API
+
 1. Ensure your Instagram account is an **Instagram Professional / Creator** account.
 2. Link your Instagram account to a **Facebook Page** (via Instagram Settings → Linked Accounts).
 3. Go to [Meta for Developers](https://developers.facebook.com/) and click **My Apps → Create App**.

@@ -82,25 +82,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           title:
-            "Broadcast — Publish to LinkedIn, X and Instagram from one place",
+            "Broadcast (Social Sync Pro) — LinkedIn & Instagram Publishing Studio",
         },
         {
           name: "description",
           content:
-            "Compose once, schedule everywhere. Broadcast is a lightweight studio for teams that publish to LinkedIn, X and Instagram on a plan.",
+            "Compose once, schedule everywhere. Broadcast is a professional studio for teams that publish to LinkedIn and Instagram.",
         },
         { name: "author", content: "Broadcast" },
         {
           property: "og:title",
-          content: "Broadcast — one composer for every network",
+          content: "Broadcast — LinkedIn and Instagram Studio",
         },
         {
           property: "og:description",
           content:
-            "Compose once, schedule everywhere. Publish to LinkedIn, X and Instagram from one clean studio.",
+            "Compose once, schedule everywhere. Publish to LinkedIn and Instagram from one unified studio.",
         },
         { property: "og:type", content: "website" },
-        { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [
         {
@@ -139,6 +138,24 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+
+  useEffect(() => {
+    // Check if coming from a GitHub Pages 404 redirect
+    if (typeof window !== "undefined") {
+      const redirectPath = sessionStorage.getItem("broadcast_redirect_path");
+      if (redirectPath) {
+        sessionStorage.removeItem("broadcast_redirect_path");
+        const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+        let cleanPath = redirectPath;
+        if (base && cleanPath.startsWith(base)) {
+          cleanPath = cleanPath.slice(base.length);
+        }
+        if (cleanPath && cleanPath !== "/" && cleanPath !== "") {
+          router.navigate({ to: cleanPath });
+        }
+      }
+    }
+  }, [router]);
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event) => {

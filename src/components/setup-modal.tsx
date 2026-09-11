@@ -23,11 +23,13 @@ import {
   RefreshCw,
   Copy,
   Check,
+  Bot,
 } from "lucide-react";
 import {
   getApiCredentials,
   saveApiCredentials,
   testSupabaseConnection,
+  COMPLETE_SQL_SCHEMA,
   type ApiCredentials,
 } from "@/lib/supabase-config";
 
@@ -77,72 +79,14 @@ export function SetupModal({ open, onOpenChange }: SetupModalProps) {
 
   function handleSave() {
     saveApiCredentials(creds);
-    toast.success("Settings & API keys saved successfully!");
+    toast.success("Settings & API credentials saved successfully!");
     onOpenChange(false);
   }
 
   function handleCopySql() {
-    navigator.clipboard.writeText(
-      `-- Run this in Supabase SQL Editor:
-CREATE TYPE public.app_role AS ENUM ('admin', 'user');
-CREATE TYPE public.social_platform AS ENUM ('linkedin', 'instagram');
-CREATE TYPE public.post_status AS ENUM ('DRAFT', 'SCHEDULED', 'PUBLISHING', 'PUBLISHED', 'FAILED');
-CREATE TYPE public.platform_result_status AS ENUM ('PENDING', 'SUCCESS', 'FAILED');
-
-CREATE TABLE IF NOT EXISTS public.profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  email TEXT,
-  display_name TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS public.connected_accounts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  platform public.social_platform NOT NULL,
-  display_name TEXT,
-  connected BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (user_id, platform)
-);
-
-CREATE TABLE IF NOT EXISTS public.posts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  content TEXT NOT NULL DEFAULT '',
-  media_urls TEXT[] NOT NULL DEFAULT '{}',
-  target_platforms public.social_platform[] NOT NULL DEFAULT '{}',
-  status public.post_status NOT NULL DEFAULT 'DRAFT',
-  scheduled_for TIMESTAMPTZ,
-  published_at TIMESTAMPTZ,
-  error TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS public.post_results (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  post_id UUID NOT NULL REFERENCES public.posts(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  platform public.social_platform NOT NULL,
-  status public.platform_result_status NOT NULL DEFAULT 'PENDING',
-  external_id TEXT,
-  error TEXT,
-  published_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.connected_accounts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.post_results ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Users access own profiles" ON public.profiles FOR ALL TO authenticated USING (auth.uid() = id);
-CREATE POLICY "Users manage own accounts" ON public.connected_accounts FOR ALL TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "Users manage own posts" ON public.posts FOR ALL TO authenticated USING (auth.uid() = user_id);
-CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authenticated USING (auth.uid() = user_id);`,
-    );
+    navigator.clipboard.writeText(COMPLETE_SQL_SCHEMA);
     setCopiedSql(true);
-    toast.success("SQL Schema copied to clipboard!");
+    toast.success("Complete SQL Schema copied to clipboard!");
     setTimeout(() => setCopiedSql(false), 2500);
   }
 
@@ -157,8 +101,8 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
             Supabase & Social API Configuration
           </DialogTitle>
           <DialogDescription className="text-xs">
-            Connect your live Supabase backend and social developer credentials,
-            or use Studio Sandbox mode.
+            Connect your live Supabase database, LinkedIn OAuth, and Meta Graph
+            API credentials, or use Studio Sandbox mode.
           </DialogDescription>
         </DialogHeader>
 
@@ -168,7 +112,7 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
               <Database className="size-3.5 mr-1.5" /> Supabase
             </TabsTrigger>
             <TabsTrigger value="social_keys" className="text-xs font-semibold">
-              <Key className="size-3.5 mr-1.5" /> API Keys (LI / IG)
+              <Key className="size-3.5 mr-1.5" /> API Credentials
             </TabsTrigger>
             <TabsTrigger value="guide" className="text-xs font-semibold">
               <HelpCircle className="size-3.5 mr-1.5" /> Setup Guide
@@ -184,7 +128,8 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                     Operational Mode
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    Choose whether to use live Supabase or instant sandbox.
+                    Choose whether to use live Supabase or interactive studio
+                    sandbox.
                   </p>
                 </div>
                 <div className="flex rounded-lg bg-secondary p-1">
@@ -192,19 +137,19 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                     type="button"
                     onClick={() => setCreds({ ...creds, mode: "demo" })}
                     className={
-                      "px-3 py-1 text-xs font-semibold rounded-md transition-all " +
+                      "px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer " +
                       (creds.mode === "demo"
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground")
                     }
                   >
-                    Sandbox Demo
+                    Studio Sandbox
                   </button>
                   <button
                     type="button"
                     onClick={() => setCreds({ ...creds, mode: "live" })}
                     className={
-                      "px-3 py-1 text-xs font-semibold rounded-md transition-all " +
+                      "px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer " +
                       (creds.mode === "live"
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "text-muted-foreground hover:text-foreground")
@@ -297,17 +242,35 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                   className="inline-block size-3 rounded-full"
                   style={{ background: "var(--brand-linkedin)" }}
                 />
-                LinkedIn API Credentials (Optional / Direct Token)
+                LinkedIn API Credentials (Optional / Direct OAuth)
               </div>
               <p className="text-xs text-muted-foreground">
-                Enter your LinkedIn Developer app credentials or Member OAuth
-                token for direct API publishing.
+                Provide your LinkedIn Member OAuth Bearer token and Member URN
+                for real API publishing. If omitted, the animated simulator will
+                run.
               </p>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-1">
                   <Label className="text-[11px] font-medium text-muted-foreground">
-                    Client ID
+                    LinkedIn Member / Org URN
+                  </Label>
+                  <Input
+                    placeholder="urn:li:person:12345678 or 12345678"
+                    value={creds.linkedinMemberUrn}
+                    onChange={(e) =>
+                      setCreds({
+                        ...creds,
+                        linkedinMemberUrn: e.target.value.trim(),
+                      })
+                    }
+                    className="bg-background/80 border-border text-xs font-mono h-9"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-[11px] font-medium text-muted-foreground">
+                    Client ID (Optional)
                   </Label>
                   <Input
                     placeholder="78xxxxxxx"
@@ -321,28 +284,11 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                     className="bg-background/80 border-border text-xs font-mono h-9"
                   />
                 </div>
-                <div className="space-y-1">
-                  <Label className="text-[11px] font-medium text-muted-foreground">
-                    Client Secret
-                  </Label>
-                  <Input
-                    type="password"
-                    placeholder="WPL_AP1_..."
-                    value={creds.linkedinClientSecret}
-                    onChange={(e) =>
-                      setCreds({
-                        ...creds,
-                        linkedinClientSecret: e.target.value.trim(),
-                      })
-                    }
-                    className="bg-background/80 border-border text-xs font-mono h-9"
-                  />
-                </div>
               </div>
 
               <div className="space-y-1">
                 <Label className="text-[11px] font-medium text-muted-foreground">
-                  LinkedIn User Access Token (Bearer)
+                  LinkedIn User Access Token (OAuth Bearer)
                 </Label>
                 <Input
                   type="password"
@@ -369,27 +315,11 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                 Instagram / Meta Graph API Credentials (Optional)
               </div>
               <p className="text-xs text-muted-foreground">
-                Enter your Meta App ID, Instagram Business Account ID, and Page
-                Access Token.
+                Uses Meta Graph API v20.0 two-step container pipeline (/media
+                then /media_publish).
               </p>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1">
-                  <Label className="text-[11px] font-medium text-muted-foreground">
-                    Meta App ID
-                  </Label>
-                  <Input
-                    placeholder="104829384920..."
-                    value={creds.instagramAppId}
-                    onChange={(e) =>
-                      setCreds({
-                        ...creds,
-                        instagramAppId: e.target.value.trim(),
-                      })
-                    }
-                    className="bg-background/80 border-border text-xs font-mono h-9"
-                  />
-                </div>
                 <div className="space-y-1">
                   <Label className="text-[11px] font-medium text-muted-foreground">
                     Instagram Business Account ID
@@ -406,11 +336,28 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                     className="bg-background/80 border-border text-xs font-mono h-9"
                   />
                 </div>
+
+                <div className="space-y-1">
+                  <Label className="text-[11px] font-medium text-muted-foreground">
+                    Meta App ID (Optional)
+                  </Label>
+                  <Input
+                    placeholder="104829384920..."
+                    value={creds.instagramAppId}
+                    onChange={(e) =>
+                      setCreds({
+                        ...creds,
+                        instagramAppId: e.target.value.trim(),
+                      })
+                    }
+                    className="bg-background/80 border-border text-xs font-mono h-9"
+                  />
+                </div>
               </div>
 
               <div className="space-y-1">
                 <Label className="text-[11px] font-medium text-muted-foreground">
-                  Graph User / Page Access Token
+                  Page Access Token (Graph Bearer)
                 </Label>
                 <Input
                   type="password"
@@ -420,6 +367,37 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                     setCreds({
                       ...creds,
                       instagramAccessToken: e.target.value.trim(),
+                    })
+                  }
+                  className="bg-background/80 border-border text-xs font-mono h-9"
+                />
+              </div>
+            </div>
+
+            {/* AI Generator Key */}
+            <div className="rounded-xl border border-border/80 bg-card/40 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                <Bot className="size-4 text-primary" />
+                AI Smart Suggestions API Key (Optional)
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Enter an OpenAI (sk-...) or Google Gemini (AIzaSy...) API key
+                for dynamic AI hook generations. If omitted, built-in
+                algorithmic generation is used.
+              </p>
+
+              <div className="space-y-1">
+                <Label className="text-[11px] font-medium text-muted-foreground">
+                  OpenAI or Google Gemini API Key
+                </Label>
+                <Input
+                  type="password"
+                  placeholder="sk-... or AIzaSy..."
+                  value={creds.aiApiKey}
+                  onChange={(e) =>
+                    setCreds({
+                      ...creds,
+                      aiApiKey: e.target.value.trim(),
                     })
                   }
                   className="bg-background/80 border-border text-xs font-mono h-9"
@@ -436,7 +414,7 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
             <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-primary">
-                  1. Supabase Fast Connect
+                  1. Turnkey Supabase Database Setup
                 </span>
                 <Button
                   type="button"
@@ -450,98 +428,91 @@ CREATE POLICY "Users manage own results" ON public.post_results FOR ALL TO authe
                   ) : (
                     <Copy className="size-3" />
                   )}
-                  {copiedSql ? "Copied SQL" : "Copy Complete SQL"}
+                  <span>Copy Complete SQL</span>
                 </Button>
               </div>
+              <p className="text-muted-foreground">
+                Copy the complete turnkey SQL script and paste it into your
+                Supabase project's SQL Editor to automatically create tables
+                (`profiles`, `connected_accounts`, `posts`, `post_results`,
+                `post_templates`), RLS policies, and the public `post-media`
+                storage bucket.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border/80 bg-card/40 p-4 space-y-2">
+              <span className="font-bold text-foreground">
+                2. LinkedIn API Credentials Setup
+              </span>
               <ol className="list-decimal pl-4 space-y-1 text-muted-foreground">
+                <li>Create an application at developer.linkedin.com</li>
                 <li>
-                  Create a free project at <strong>supabase.com</strong>.
+                  Add the "Share on LinkedIn" and "Sign In with LinkedIn using
+                  OpenID Connect" products.
                 </li>
                 <li>
-                  Go to <strong>Project Settings → API</strong>. Copy your{" "}
-                  <strong>Project URL</strong> and{" "}
-                  <strong>anon / publishable</strong> key.
+                  Generate an OAuth 2.0 Access Token with `w_member_social`
+                  permission.
                 </li>
                 <li>
-                  Go to the <strong>SQL Editor</strong> in Supabase, click{" "}
-                  <em>New Query</em>, paste the copied SQL schema, and click{" "}
-                  <strong>Run</strong>.
+                  Retrieve your Member URN (or query
+                  `https://api.linkedin.com/v2/userinfo` to find your `sub` ID).
                 </li>
                 <li>
-                  Paste your URL & Key into the Supabase tab in this dialog and
-                  hit <strong>Test Connection</strong>.
+                  Paste your Bearer Token and Member URN into the API
+                  Credentials tab.
                 </li>
               </ol>
             </div>
 
-            <div className="rounded-xl border border-border/80 bg-card/30 p-4 space-y-2">
+            <div className="rounded-xl border border-border/80 bg-card/40 p-4 space-y-2">
               <span className="font-bold text-foreground">
-                2. LinkedIn API Keys Setup
+                3. Meta / Instagram Graph API Setup
               </span>
               <ol className="list-decimal pl-4 space-y-1 text-muted-foreground">
                 <li>
-                  Visit <strong>developer.linkedin.com</strong> and create a
-                  Developer App.
+                  In Meta for Developers (developers.facebook.com), create a
+                  Business App.
+                </li>
+                <li>Add the Instagram Graph API product.</li>
+                <li>
+                  Connect your Instagram Business or Creator account to a
+                  Facebook Page.
                 </li>
                 <li>
-                  Link your LinkedIn Company Page or profile in the app
-                  settings.
+                  In the Graph API Explorer, generate a Page Access Token with
+                  `instagram_basic` and `instagram_content_publish` permissions.
                 </li>
                 <li>
-                  Under the <strong>Products</strong> tab, add{" "}
-                  <em>Share on LinkedIn</em> and{" "}
-                  <em>Sign In with LinkedIn using OpenID Connect</em>.
+                  Query `GET /me/accounts` to retrieve your connected
+                  `instagram_business_account` ID.
                 </li>
                 <li>
-                  Copy the <strong>Client ID</strong> and{" "}
-                  <strong>Client Secret</strong> from the <strong>Auth</strong>{" "}
-                  tab.
-                </li>
-              </ol>
-            </div>
-
-            <div className="rounded-xl border border-border/80 bg-card/30 p-4 space-y-2">
-              <span className="font-bold text-foreground">
-                3. Instagram Graph API Setup
-              </span>
-              <ol className="list-decimal pl-4 space-y-1 text-muted-foreground">
-                <li>
-                  Ensure your Instagram account is switched to a{" "}
-                  <strong>Professional / Creator</strong> account.
-                </li>
-                <li>
-                  Link your Instagram Professional account to a Facebook Page.
-                </li>
-                <li>
-                  Go to <strong>developers.facebook.com</strong> and create an
-                  app of type <em>Business</em>.
-                </li>
-                <li>
-                  Add the <strong>Instagram Graph API</strong> product to your
-                  app.
-                </li>
-                <li>
-                  Generate a Page Access Token with permissions:{" "}
-                  <code>instagram_basic</code>,{" "}
-                  <code>instagram_content_publish</code>,{" "}
-                  <code>pages_show_list</code>.
+                  Paste the Page Access Token and Instagram Business Account ID
+                  into the API Credentials tab.
                 </li>
               </ol>
             </div>
           </TabsContent>
         </Tabs>
 
-        <DialogFooter className="gap-2 sm:gap-0 mt-4 border-t border-border/60 pt-3">
-          <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-            Close
+        <DialogFooter className="gap-2 pt-2 border-t border-border/60">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
           </Button>
           <Button
+            type="button"
             variant="gradient"
             size="sm"
             onClick={handleSave}
             className="shadow-glow"
           >
-            Save & Apply Configuration
+            Save Configuration
           </Button>
         </DialogFooter>
       </DialogContent>

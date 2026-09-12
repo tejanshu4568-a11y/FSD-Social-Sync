@@ -18,12 +18,10 @@ import {
   LogOut,
   User,
   Sparkles,
-  Settings,
   BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { SetupModal } from "@/components/setup-modal";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -49,7 +47,6 @@ function AuthedShell() {
   const queryClient = useQueryClient();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [email, setEmail] = useState<string>(user.email ?? "");
-  const [setupOpen, setSetupOpen] = useState(false);
 
   useEffect(() => setEmail(user.email ?? ""), [user.email]);
 
@@ -108,17 +105,6 @@ function AuthedShell() {
               </Link>
             );
           })}
-
-          <div className="pt-4 px-1">
-            <button
-              type="button"
-              onClick={() => setSetupOpen(true)}
-              className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold text-primary border border-primary/30 bg-primary/10 hover:bg-primary/20 transition-all cursor-pointer shadow-glow"
-            >
-              <Settings className="size-4 text-primary" />
-              <span>API & Supabase Setup</span>
-            </button>
-          </div>
         </nav>
 
         {/* User profile section */}
@@ -163,13 +149,6 @@ function AuthedShell() {
             Broadcast
           </Link>
           <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSetupOpen(true)}
-            >
-              <Settings className="size-4 text-primary" />
-            </Button>
             <Button variant="ghost" size="sm" onClick={signOut}>
               <LogOut className="size-4" />
             </Button>
@@ -201,8 +180,6 @@ function AuthedShell() {
           })}
         </nav>
       </div>
-
-      <SetupModal open={setupOpen} onOpenChange={setSetupOpen} />
     </div>
   );
 }

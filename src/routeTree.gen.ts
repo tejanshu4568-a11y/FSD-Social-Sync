@@ -8,229 +8,229 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as AuthenticatedAccountsRouteImport } from './routes/_authenticated/accounts'
-import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
-import { Route as AuthenticatedComposerRouteImport } from './routes/_authenticated/composer'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedLibraryRouteImport } from './routes/_authenticated/library'
-import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
+import { Route as rootRouteImport } from "./routes/__root";
+import { Route as IndexRouteImport } from "./routes/index";
+import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/route";
+import { Route as AuthRouteImport } from "./routes/auth";
+import { Route as SitemapDotxmlRouteImport } from "./routes/sitemap[.]xml";
+import { Route as AuthenticatedAccountsRouteImport } from "./routes/_authenticated/accounts";
+import { Route as AuthenticatedCalendarRouteImport } from "./routes/_authenticated/calendar";
+import { Route as AuthenticatedComposerRouteImport } from "./routes/_authenticated/composer";
+import { Route as AuthenticatedDashboardRouteImport } from "./routes/_authenticated/dashboard";
+import { Route as AuthenticatedLibraryRouteImport } from "./routes/_authenticated/library";
+import { Route as ApiPublicCronPublishRouteImport } from "./routes/api/public/cron/publish";
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+  id: "/_authenticated",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+  id: "/auth",
+  path: "/auth",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+  id: "/sitemap.xml",
+  path: "/sitemap.xml",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 const AuthenticatedAccountsRoute = AuthenticatedAccountsRouteImport.update({
-  id: '/accounts',
-  path: '/accounts',
+  id: "/accounts",
+  path: "/accounts",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
+  id: "/calendar",
+  path: "/calendar",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedComposerRoute = AuthenticatedComposerRouteImport.update({
-  id: '/composer',
-  path: '/composer',
+  id: "/composer",
+  path: "/composer",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: "/dashboard",
+  path: "/dashboard",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const AuthenticatedLibraryRoute = AuthenticatedLibraryRouteImport.update({
-  id: '/library',
-  path: '/library',
+  id: "/library",
+  path: "/library",
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+} as any);
 const ApiPublicCronPublishRoute = ApiPublicCronPublishRouteImport.update({
-  id: '/api/public/cron/publish',
-  path: '/api/public/cron/publish',
+  id: "/api/public/cron/publish",
+  path: "/api/public/cron/publish",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/accounts': typeof AuthenticatedAccountsRoute
-  '/calendar': typeof AuthenticatedCalendarRoute
-  '/composer': typeof AuthenticatedComposerRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/library': typeof AuthenticatedLibraryRoute
-  '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  "/": typeof IndexRoute;
+  "/auth": typeof AuthRoute;
+  "/sitemap.xml": typeof SitemapDotxmlRoute;
+  "/accounts": typeof AuthenticatedAccountsRoute;
+  "/calendar": typeof AuthenticatedCalendarRoute;
+  "/composer": typeof AuthenticatedComposerRoute;
+  "/dashboard": typeof AuthenticatedDashboardRoute;
+  "/library": typeof AuthenticatedLibraryRoute;
+  "/api/public/cron/publish": typeof ApiPublicCronPublishRoute;
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/accounts': typeof AuthenticatedAccountsRoute
-  '/calendar': typeof AuthenticatedCalendarRoute
-  '/composer': typeof AuthenticatedComposerRoute
-  '/dashboard': typeof AuthenticatedDashboardRoute
-  '/library': typeof AuthenticatedLibraryRoute
-  '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  "/": typeof IndexRoute;
+  "/auth": typeof AuthRoute;
+  "/sitemap.xml": typeof SitemapDotxmlRoute;
+  "/accounts": typeof AuthenticatedAccountsRoute;
+  "/calendar": typeof AuthenticatedCalendarRoute;
+  "/composer": typeof AuthenticatedComposerRoute;
+  "/dashboard": typeof AuthenticatedDashboardRoute;
+  "/library": typeof AuthenticatedLibraryRoute;
+  "/api/public/cron/publish": typeof ApiPublicCronPublishRoute;
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/_authenticated/accounts': typeof AuthenticatedAccountsRoute
-  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
-  '/_authenticated/composer': typeof AuthenticatedComposerRoute
-  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/library': typeof AuthenticatedLibraryRoute
-  '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  __root__: typeof rootRouteImport;
+  "/": typeof IndexRoute;
+  "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
+  "/auth": typeof AuthRoute;
+  "/sitemap.xml": typeof SitemapDotxmlRoute;
+  "/_authenticated/accounts": typeof AuthenticatedAccountsRoute;
+  "/_authenticated/calendar": typeof AuthenticatedCalendarRoute;
+  "/_authenticated/composer": typeof AuthenticatedComposerRoute;
+  "/_authenticated/dashboard": typeof AuthenticatedDashboardRoute;
+  "/_authenticated/library": typeof AuthenticatedLibraryRoute;
+  "/api/public/cron/publish": typeof ApiPublicCronPublishRoute;
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/auth'
-    | '/sitemap.xml'
-    | '/accounts'
-    | '/calendar'
-    | '/composer'
-    | '/dashboard'
-    | '/library'
-    | '/api/public/cron/publish'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/auth"
+    | "/sitemap.xml"
+    | "/accounts"
+    | "/calendar"
+    | "/composer"
+    | "/dashboard"
+    | "/library"
+    | "/api/public/cron/publish";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/auth'
-    | '/sitemap.xml'
-    | '/accounts'
-    | '/calendar'
-    | '/composer'
-    | '/dashboard'
-    | '/library'
-    | '/api/public/cron/publish'
+    | "/"
+    | "/auth"
+    | "/sitemap.xml"
+    | "/accounts"
+    | "/calendar"
+    | "/composer"
+    | "/dashboard"
+    | "/library"
+    | "/api/public/cron/publish";
   id:
-    | '__root__'
-    | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/sitemap.xml'
-    | '/_authenticated/accounts'
-    | '/_authenticated/calendar'
-    | '/_authenticated/composer'
-    | '/_authenticated/dashboard'
-    | '/_authenticated/library'
-    | '/api/public/cron/publish'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/_authenticated"
+    | "/auth"
+    | "/sitemap.xml"
+    | "/_authenticated/accounts"
+    | "/_authenticated/calendar"
+    | "/_authenticated/composer"
+    | "/_authenticated/dashboard"
+    | "/_authenticated/library"
+    | "/api/public/cron/publish";
+  fileRoutesById: FileRoutesById;
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
+  IndexRoute: typeof IndexRoute;
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
+  AuthRoute: typeof AuthRoute;
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute;
+  ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute;
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/accounts': {
-      id: '/_authenticated/accounts'
-      path: '/accounts'
-      fullPath: '/accounts'
-      preLoaderRoute: typeof AuthenticatedAccountsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/calendar': {
-      id: '/_authenticated/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof AuthenticatedCalendarRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/composer': {
-      id: '/_authenticated/composer'
-      path: '/composer'
-      fullPath: '/composer'
-      preLoaderRoute: typeof AuthenticatedComposerRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/library': {
-      id: '/_authenticated/library'
-      path: '/library'
-      fullPath: '/library'
-      preLoaderRoute: typeof AuthenticatedLibraryRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/api/public/cron/publish': {
-      id: '/api/public/cron/publish'
-      path: '/api/public/cron/publish'
-      fullPath: '/api/public/cron/publish'
-      preLoaderRoute: typeof ApiPublicCronPublishRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated": {
+      id: "/_authenticated";
+      path: "";
+      fullPath: "/";
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/auth": {
+      id: "/auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/sitemap.xml": {
+      id: "/sitemap.xml";
+      path: "/sitemap.xml";
+      fullPath: "/sitemap.xml";
+      preLoaderRoute: typeof SitemapDotxmlRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+    "/_authenticated/accounts": {
+      id: "/_authenticated/accounts";
+      path: "/accounts";
+      fullPath: "/accounts";
+      preLoaderRoute: typeof AuthenticatedAccountsRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/calendar": {
+      id: "/_authenticated/calendar";
+      path: "/calendar";
+      fullPath: "/calendar";
+      preLoaderRoute: typeof AuthenticatedCalendarRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/composer": {
+      id: "/_authenticated/composer";
+      path: "/composer";
+      fullPath: "/composer";
+      preLoaderRoute: typeof AuthenticatedComposerRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/dashboard": {
+      id: "/_authenticated/dashboard";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/_authenticated/library": {
+      id: "/_authenticated/library";
+      path: "/library";
+      fullPath: "/library";
+      preLoaderRoute: typeof AuthenticatedLibraryRouteImport;
+      parentRoute: typeof AuthenticatedRouteRoute;
+    };
+    "/api/public/cron/publish": {
+      id: "/api/public/cron/publish";
+      path: "/api/public/cron/publish";
+      fullPath: "/api/public/cron/publish";
+      preLoaderRoute: typeof ApiPublicCronPublishRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAccountsRoute: typeof AuthenticatedAccountsRoute
-  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
-  AuthenticatedComposerRoute: typeof AuthenticatedComposerRoute
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute
+  AuthenticatedAccountsRoute: typeof AuthenticatedAccountsRoute;
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute;
+  AuthenticatedComposerRoute: typeof AuthenticatedComposerRoute;
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute;
+  AuthenticatedLibraryRoute: typeof AuthenticatedLibraryRoute;
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -239,10 +239,10 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedComposerRoute: AuthenticatedComposerRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedLibraryRoute: AuthenticatedLibraryRoute,
-}
+};
 
 const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren);
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -250,17 +250,17 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicCronPublishRoute: ApiPublicCronPublishRoute,
-}
+};
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx";
+import type { startInstance } from "./start.ts";
+declare module "@tanstack/react-start" {
   interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+    ssr: true;
+    router: Awaited<ReturnType<typeof getRouter>>;
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>;
   }
 }
